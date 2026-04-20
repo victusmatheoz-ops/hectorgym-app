@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HECTORGYM — Tu Gimnasio</title>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e53935">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HectorGym">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <!-- /PWA -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body data-page="landing">
+
+    <!-- Navbar pública -->
+    <nav class="navbar">
+        <a href="landing.html" class="navbar-brand">
+            <i class="fas fa-dumbbell icon"></i>
+            <span>HECTOR<span class="gym">GYM</span></span>
+        </a>
+        <div class="navbar-actions">
+            <a href="landing.html#app" class="btn btn-outline-orange" style="margin-right:8px">
+                <i class="fas fa-mobile-screen"></i> Descargar App
+            </a>
+            <a href="login.html" class="btn btn-red" id="navLoginBtn">
+                <i class="fas fa-right-to-bracket"></i> Iniciar sesión
+            </a>
+            <a href="login.html" class="btn btn-logout" id="navLogoutBtn" style="display:none">
+                <i class="fas fa-sign-out-alt"></i> Salir
+            </a>
+        </div>
+    </nav>
+
+    <!-- =========== HERO =========== -->
+    <section class="landing-hero">
+        <div class="landing-hero-bg"></div>
+        <div class="landing-hero-content">
+            <div class="landing-hero-badge">
+                <i class="fas fa-fire"></i> Entrena con propósito
+            </div>
+            <h1 class="landing-hero-title">
+                HECTOR<span class="landing-title-accent">GYM</span>
+            </h1>
+            <p class="landing-hero-tagline">Tu cuerpo no miente. El trabajo tampoco.</p>
+            <p class="landing-hero-desc">
+                Somos más que un gimnasio. Somos una comunidad de personas comprometidas
+                con su salud, su fuerza y su bienestar. Entrenadores especializados,
+                equipos de punta y rutinas personalizadas para cada nivel.
+            </p>
+            <div class="landing-hero-actions">
+                <a href="#app" class="btn btn-red landing-btn-main">
+                    <i class="fas fa-mobile-screen"></i> DESCARGAR LA APP
+                </a>
+                <a href="https://wa.me/573006520609" target="_blank" rel="noopener" class="btn btn-outline-orange">
+                    <i class="fab fa-whatsapp"></i> CONTÁCTANOS
+                </a>
+            </div>
+        </div>
+        <div class="landing-hero-scroll">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- =========== STATS =========== -->
+    <section class="landing-stats">
+        <div class="landing-stats-grid">
+            <div class="landing-stat-item">
+                <div class="landing-stat-number">100+</div>
+                <div class="landing-stat-label">Clientes activos</div>
+            </div>
+            <div class="landing-stat-item">
+                <div class="landing-stat-number">50+</div>
+                <div class="landing-stat-label">Equipos modernos</div>
+            </div>
+            <div class="landing-stat-item">
+                <div class="landing-stat-number">10+</div>
+                <div class="landing-stat-label">Rutinas disponibles</div>
+            </div>
+            <div class="landing-stat-item">
+                <div class="landing-stat-number">5★</div>
+                <div class="landing-stat-label">Calificación</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== SOBRE EL GYM =========== -->
+    <section class="landing-about" id="about">
+        <div class="landing-section-container">
+            <div class="landing-section-label">QUIÉNES SOMOS</div>
+            <h2 class="landing-section-title">Un gimnasio diseñado<br><span class="landing-title-accent">para ti</span></h2>
+            <p class="landing-section-desc">
+                En HECTORGYM creemos que el fitness no tiene edad ni límites. Desde el día
+                que abres la puerta, eres parte de nuestra familia. Contamos con espacios
+                amplios, equipos de alta calidad y un equipo humano dispuesto a acompañarte
+                en cada etapa de tu transformación.
+            </p>
+            <div class="landing-features-grid">
+                <div class="landing-feature-card">
+                    <div class="landing-feature-icon" style="background:rgba(229,57,53,.15); color:#e53935">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Rutinas personalizadas</h3>
+                    <p>Planes de entrenamiento adaptados a tu nivel, objetivo y disponibilidad.</p>
+                </div>
+                <div class="landing-feature-card">
+                    <div class="landing-feature-icon" style="background:rgba(30,136,229,.15); color:#1e88e5">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Equipos modernos</h3>
+                    <p>Más de 50 máquinas y estaciones de pesas para todos los grupos musculares.</p>
+                </div>
+                <div class="landing-feature-card">
+                    <div class="landing-feature-icon" style="background:rgba(76,175,80,.15); color:#4caf50">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Horarios flexibles</h3>
+                    <p>Abre todos los días de la semana con amplios horarios para que nunca te quedes sin entrenar.</p>
+                </div>
+                <div class="landing-feature-card">
+                    <div class="landing-feature-icon" style="background:rgba(255,193,7,.15); color:#ffc107">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3>Membresía única</h3>
+                    <p>Un solo plan claro: acceso completo al gimnasio por solo <strong style="color:#e53935">$60.000 COP/mes</strong>. Sin sorpresas.</p>
+                </div>
+                <div class="landing-feature-card">
+                    <div class="landing-feature-icon" style="background:rgba(124,77,255,.15); color:#7c4dff">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Comunidad activa</h3>
+                    <p>Entrena rodeado de personas con tu misma mentalidad y motivación.</p>
+                </div>
+                <div class="landing-feature-card">
+                    <div class="landing-feature-icon" style="background:rgba(38,166,154,.15); color:#26a69a">
+                        <i class="fas fa-mobile-screen"></i>
+                    </div>
+                    <h3>App para clientes</h3>
+                    <p>Consulta tu rutina, pagos y membresía desde tu celular, cuando quieras.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== DESCARGA LA APP =========== -->
+    <section class="landing-app" id="app">
+        <div class="landing-app-container">
+            <div class="landing-app-text">
+                <div class="landing-section-label">APLICACIÓN MÓVIL</div>
+                <h2 class="landing-section-title">Tu gym en<br><span class="landing-title-accent">el bolsillo</span></h2>
+                <p class="landing-section-desc">
+                    Descarga la app oficial de HECTORGYM y lleva todo el control
+                    de tu entrenamiento desde tu celular. Consulta tu rutina asignada,
+                    revisa tus pagos, verifica tu membresía y mucho más.
+                </p>
+                <ul class="landing-app-features">
+                    <li><i class="fas fa-check-circle"></i> Ver tu rutina personalizada</li>
+                    <li><i class="fas fa-check-circle"></i> Historial de pagos</li>
+                    <li><i class="fas fa-check-circle"></i> Estado de membresía y días restantes</li>
+                    <li><i class="fas fa-check-circle"></i> Contacto directo con el gimnasio</li>
+                </ul>
+                <div class="landing-app-actions">
+                    <a href="#" class="landing-app-btn" id="downloadAndroid">
+                        <div class="landing-app-btn-icon"><i class="fab fa-android"></i></div>
+                        <div class="landing-app-btn-text">
+                            <span class="landing-app-btn-sub">Disponible en</span>
+                            <span class="landing-app-btn-main">Android</span>
+                        </div>
+                    </a>
+                    <a href="https://wa.me/573006520609?text=Hola!%20quisiera%20descargar%20la%20app%20de%20HECTORGYM" 
+                       target="_blank" rel="noopener" class="landing-app-btn landing-app-btn-wa">
+                        <div class="landing-app-btn-icon"><i class="fab fa-whatsapp"></i></div>
+                        <div class="landing-app-btn-text">
+                            <span class="landing-app-btn-sub">¿Necesitas ayuda?</span>
+                            <span class="landing-app-btn-main">Escríbenos</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="landing-app-mockup">
+                <div class="landing-phone-frame">
+                    <div class="landing-phone-screen">
+                        <div class="landing-phone-header">
+                            <div class="landing-phone-logo">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div class="landing-phone-name">HECTORGYM</div>
+                        </div>
+                        <div class="landing-phone-card">
+                            <div class="landing-phone-card-label">MEMBRESÍA GENERAL</div>
+                            <div class="landing-phone-card-days">28</div>
+                            <div class="landing-phone-card-sub">días restantes</div>
+                            <div class="landing-phone-card-bar">
+                                <div class="landing-phone-card-bar-fill"></div>
+                            </div>
+                        </div>
+                        <div class="landing-phone-tabs">
+                            <div class="landing-phone-tab active"><i class="fas fa-home"></i></div>
+                            <div class="landing-phone-tab"><i class="fas fa-dumbbell"></i></div>
+                            <div class="landing-phone-tab"><i class="fas fa-receipt"></i></div>
+                            <div class="landing-phone-tab"><i class="fas fa-user"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== CONTACTO =========== -->
+    <section class="landing-contact" id="contact">
+        <div class="landing-section-container" style="text-align:center">
+            <div class="landing-section-label">CONTÁCTANOS</div>
+            <h2 class="landing-section-title">¿Listo para comenzar?</h2>
+            <p class="landing-section-desc" style="max-width:500px; margin:0 auto 40px">
+                Escríbenos por WhatsApp para más información, inscripciones o cualquier consulta.
+                Estamos para ayudarte.
+            </p>
+            <a href="https://wa.me/573006520609" target="_blank" rel="noopener" class="btn btn-wa-big">
+                <i class="fab fa-whatsapp"></i> ESCRIBIR POR WHATSAPP
+            </a>
+            <div class="landing-contact-info">
+                <div class="landing-contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+57 300 6520609</span>
+                </div>
+                <div class="landing-contact-item">
+                    <i class="fas fa-location-dot"></i>
+                    <span>Colombia</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== FOOTER =========== -->
+    <footer class="landing-footer">
+        <div class="landing-footer-brand">
+            <i class="fas fa-dumbbell"></i>
+            <span>HECTOR<span style="color:var(--red)">GYM</span></span>
+        </div>
+        <p class="landing-footer-copy">© 2026 HECTORGYM. Todos los derechos reservados.</p>
+        <div class="landing-footer-links">
+            <a href="login.html">Acceso admin</a>
+            <a href="https://wa.me/573006520609" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+    </footer>
+
+    <!-- WhatsApp float -->
+    <a href="https://wa.me/573006520609" target="_blank" rel="noopener" class="wa-float" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Si hay sesión de usuario, mostrar botón salir en lugar de login
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('hectorgym_user');
+            if (user) {
+                document.getElementById('navLoginBtn').style.display = 'none';
+                document.getElementById('navLogoutBtn').style.display = 'inline-flex';
+                document.getElementById('navLogoutBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('hectorgym_token');
+                    localStorage.removeItem('hectorgym_user');
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+===================================================
+   HECTORGYM - MANTENIMIENTO ADAPTATIVO
+===================================================
+
+¿QUÉ ES EL MANTENIMIENTO ADAPTATIVO?
+--------------------------------------
+Es el tipo de mantenimiento que se aplica cuando el software
+necesita modificarse para seguir funcionando correctamente
+ante cambios en su entorno, sin que el programa en sí
+tenga errores. No se corrigen bugs, se adapta el sistema
+a nuevas condiciones externas.
+
+
+¿POR QUÉ ES EL MÁS RELEVANTE PARA HECTORGYM?
+---------------------------------------------
+HECTORGYM depende directamente de la red local, los
+dispositivos Android usados y el sistema operativo del
+servidor. Cada vez que alguno de esos factores cambia,
+el sistema requiere ajustes para seguir funcionando.
+
+
+ACTIVIDADES DE MANTENIMIENTO ADAPTATIVO REALIZADAS
+----------------------------------------------------
+
+1. CAMBIO DE IP DEL SERVIDOR SEGÚN RED
+   El backend corre en el PC del administrador. Cada vez
+   que se cambia de red WiFi (hogar, hotspot Android,
+   hotspot iPhone), la IP del PC cambia. La app Flutter
+   tiene la IP hardcodeada en app_config.dart, por lo que
+   cada cambio de red requería actualizar ese archivo y
+   recompilar el APK para redistribuirlo.
+   Redes usadas: 192.168.1.7 → 10.142.51.252 → 10.45.230.252 → 172.20.10.5
+
+2. ADAPTACIÓN PARA MÚLTIPLES DISPOSITIVOS ANDROID
+   El sistema fue probado y desplegado en dos dispositivos
+   distintos: un Xiaomi (ID: 9TTOB6AEWKPNUCGQ) y un Samsung
+   S24 Ultra (ID: R5CY23B2QDW). Para el Samsung fue necesario
+   activar la depuración USB en las opciones de desarrollador
+   y conectarlo por cable para instalar la app directamente
+   con "flutter run", evitando problemas de red.
+
+3. IMPLEMENTACIÓN DE CLOUDFLARE TUNNEL
+   Como alternativa a la IP local (que cambia con cada red),
+   se configuró un túnel Cloudflare que expone el backend
+   a internet con una URL fija. Esto permite que la app
+   funcione desde cualquier red sin necesidad de recompilar.
+   URL del túnel: https://comparisons-scoring-alerts-ends.trycloudflare.com
+
+4. APERTURA DE PUERTO EN FIREWALL DE WINDOWS
+   Windows bloqueaba las conexiones entrantes al puerto 3000
+   desde los dispositivos Android. Se creó una regla de entrada
+   en el Firewall de Windows para permitir conexiones TCP
+   al puerto 3000, adaptando el entorno del sistema operativo
+   a los requisitos de comunicación del proyecto.
+
+5. AJUSTE DEL SERVICE WORKER (PWA)
+   El Service Worker del panel web estaba configurado en modo
+   cache-first, lo que causaba que los navegadores sirvieran
+   versiones antiguas de los archivos incluso después de
+   actualizarlos. Se cambió a network-first y se actualizó
+   la versión a "hectorgym-v3", adaptando el comportamiento
+   del caché al entorno de desarrollo activo.
+
+
+TABLA RESUMEN
+----------------------------------------------------
+Actividad                | Causa                        | Solución                         | Estado
+-------------------------|------------------------------|----------------------------------|----------
+Cambio de IP en app      | Red WiFi cambia el IP del PC | Actualizar app_config.dart + APK | Completado
+Despliegue en Samsung    | Dispositivo nuevo sin acceso | USB debugging + flutter run      | Completado
+Cloudflare Tunnel        | IP inestable entre redes     | Túnel con URL fija               | Completado
+Regla en Firewall        | Windows bloqueaba puerto 3000| Regla TCP entrada puerto 3000    | Completado
+Service Worker v3        | Caché servía archivos viejos | Network-first + nueva versión    | Completado
+
+
+CONCLUSIÓN
+----------------------------------------------------
+El mantenimiento adaptativo fue el tipo de mantenimiento
+predominante en HECTORGYM porque el entorno de despliegue
+es dinámico: diferentes redes, diferentes dispositivos y
+un sistema operativo con restricciones de red propias.
+Ninguna de estas adaptaciones corrigió errores del código,
+sino que ajustaron el sistema a las condiciones reales
+donde opera, que es exactamente la definición de
+mantenimiento adaptativo.
+
+===================================================

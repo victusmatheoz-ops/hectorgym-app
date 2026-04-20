@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HECTORGYM - Dashboard Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body data-page="index">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <i class="fas fa-dumbbell icon"></i>
+            <span>HECTOR<span class="gym">GYM</span></span>
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="index.html" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="clientes.html"><i class="fas fa-users"></i> Clientes</a></li>
+            <li><a href="membresias.html"><i class="fas fa-id-card"></i> Membresías</a></li>
+            <li><a href="pagos.html"><i class="fas fa-money-bill-wave"></i> Pagos</a></li>
+            <li><a href="rutinas.html"><i class="fas fa-clipboard-list"></i> Rutinas</a></li>
+            <li><a href="maquinas.html"><i class="fas fa-cog"></i> Máquinas</a></li>
+        </ul>
+        <button class="btn btn-logout" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Salir
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-tagline">Panel de administración</div>
+                <div class="hero-tagline" id="adminName">Inicia sesión para cargar datos</div>
+                <h1>GET STRONGER<br><span class="accent">EVERY DAY</span></h1>
+                <div class="hero-divider"></div>
+                <p>Sistema completo de gestión para tu gimnasio. Controla clientes, membresías, pagos y rutinas en un solo lugar.</p>
+                <div class="hero-buttons">
+                    <a href="clientes.html" class="btn btn-red">
+                        <i class="fas fa-users"></i> VER CLIENTES
+                    </a>
+                    <a href="membresias.html" class="btn btn-outline-orange">
+                        <i class="fas fa-id-card"></i> MEMBRESÍAS
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Stats -->
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card card-red" data-dashboard-link="clientes.html" role="link" tabindex="0" aria-label="Ir a clientes">
+                <div>
+                    <div class="stat-label">Total Clientes</div>
+                    <div class="stat-number" data-stat="clientes">0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-link">Ver detalles <i class="fas fa-arrow-right"></i></div>
+            </div>
+            <div class="admin-stat-card card-blue" data-dashboard-link="membresias.html" role="link" tabindex="0" aria-label="Ir a membresías">
+                <div>
+                    <div class="stat-label">Membresías Activas</div>
+                    <div class="stat-number" data-stat="membresias">0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                <div class="stat-link">Ver detalles <i class="fas fa-arrow-right"></i></div>
+            </div>
+            <div class="admin-stat-card card-green" data-dashboard-link="rutinas.html" role="link" tabindex="0" aria-label="Ir a rutinas">
+                <div>
+                    <div class="stat-label">Rutinas Activas</div>
+                    <div class="stat-number" data-stat="rutinas">0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-cog"></i></div>
+                <div class="stat-link">Ver detalles <i class="fas fa-arrow-right"></i></div>
+            </div>
+            <div class="admin-stat-card card-yellow" data-dashboard-link="pagos.html" role="link" tabindex="0" aria-label="Ir a pagos">
+                <div>
+                    <div class="stat-label">Pagos Hoy</div>
+                    <div class="stat-number" data-stat="pagos">0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-link">Ver detalles <i class="fas fa-arrow-right"></i></div>
+            </div>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="admin-bottom">
+            <!-- Características del Sistema -->
+            <div class="section-card features-card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i> Características del Sistema
+                </div>
+                <div class="card-body">
+                    <div class="features-grid">
+                        <div class="feature-item" data-dashboard-link="clientes.html" role="link" tabindex="0" aria-label="Ir a gestión de clientes">
+                            <div class="feature-icon"><i class="fas fa-users"></i></div>
+                            <div>
+                                <div class="feature-title">Gestión de Clientes</div>
+                                <div class="feature-desc">Perfiles completos con datos corporales y objetivos</div>
+                            </div>
+                        </div>
+                        <div class="feature-item" data-dashboard-link="membresias.html" role="link" tabindex="0" aria-label="Ir a membresías">
+                            <div class="feature-icon"><i class="fas fa-id-card"></i></div>
+                            <div>
+                                <div class="feature-title">Membresía General</div>
+                                <div class="feature-desc">Plan único de 60.000 COP con control de vencimientos</div>
+                            </div>
+                        </div>
+                        <div class="feature-item" data-dashboard-link="pagos.html" role="link" tabindex="0" aria-label="Ir a pagos">
+                            <div class="feature-icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div>
+                                <div class="feature-title">Control de Pagos</div>
+                                <div class="feature-desc">Registro detallado con múltiples métodos</div>
+                            </div>
+                        </div>
+                        <div class="feature-item" data-dashboard-link="rutinas.html" role="link" tabindex="0" aria-label="Ir a rutinas">
+                            <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
+                            <div>
+                                <div class="feature-title">Rutinas Personalizadas</div>
+                                <div class="feature-desc">Planes de entrenamiento con ejercicios detallados</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acceso Rápido -->
+            <div class="section-card quick-access-card">
+                <div class="card-header">
+                    <i class="fas fa-bolt"></i> Acceso Rápido
+                </div>
+                <div class="card-body">
+                    <div class="quick-link" data-dashboard-link="clientes.html" role="link" tabindex="0" aria-label="Ir a nuevo cliente">
+                        <div class="link-content">
+                            <i class="fas fa-user-plus"></i> NUEVO CLIENTE
+                        </div>
+                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    </div>
+                    <div class="quick-link" data-dashboard-link="membresias.html" role="link" tabindex="0" aria-label="Ir a nueva membresía">
+                        <div class="link-content">
+                            <i class="fas fa-id-card"></i> NUEVA MEMBRESÍA
+                        </div>
+                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    </div>
+                    <div class="quick-link" data-dashboard-link="pagos.html" role="link" tabindex="0" aria-label="Ir a registrar pago">
+                        <div class="link-content">
+                            <i class="fas fa-money-bill-wave"></i> REGISTRAR PAGO
+                        </div>
+                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    </div>
+                    <div class="quick-link" data-dashboard-link="rutinas.html" role="link" tabindex="0" aria-label="Ir a asignar rutina">
+                        <div class="link-content">
+                            <i class="fas fa-clipboard-list"></i> ASIGNAR RUTINA
+                        </div>
+                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Nav -->
+    <nav class="admin-footer">
+        <a href="index.html" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="clientes.html"><i class="fas fa-users"></i> Clientes</a>
+        <a href="membresias.html"><i class="fas fa-id-card"></i> Membresías</a>
+        <a href="pagos.html"><i class="fas fa-money-bill-wave"></i> Pagos</a>
+        <a href="rutinas.html"><i class="fas fa-clipboard-list"></i> Rutinas</a>
+        <a href="maquinas.html"><i class="fas fa-cog"></i> Máquinas</a>
+    </nav>
+
+    <div class="modal-overlay active" id="loginOverlay" style="display:none">
+    </div>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+===================================================
+   HECTORGYM - RESUMEN DE CAMBIOS Y AGREGADOS
+===================================================
+
+--- BACKEND (Node.js + Express + MySQL) ---
+- API REST completa: auth, clientes, membresias, pagos, rutinas, maquinas
+- Base de datos: MySQL 8, DB = hectorgym
+- Fix: GET /membresias/usuario/:id devuelve 200+null si no hay membresia (evita crash en app)
+- Puerto: 3000
+- Credenciales admin: admin@hectorgym.com / Admin123
+
+--- WEB ADMIN PANEL (HTML/CSS/JS) ---
+- 6 modulos: clientes, membresias, pagos, rutinas, maquinas + portal/landing
+- Sistema de modales personalizados (showFormModal / showConfirmModal)
+  * Reemplaza los 20 window.prompt() y 5 window.confirm() del navegador
+  * Tema negro/rojo del gimnasio
+- CSS agregado: .modal-footer, .btn-primary, .btn-outline, .btn-danger
+
+--- PWA ---
+- manifest.json + iconos
+- sw.js v3: estrategia network-first para HTML/CSS/JS (antes era cache-first y cargaba paginas viejas)
+
+--- FLUTTER APP ---
+- login_screen.dart: link "Crear cuenta" que navega a /register, pre-llena email al volver
+- register_screen.dart: pantalla nueva con campos nombre/apellido, correo, telefono (opcional), password
+- api_service.dart: metodo register(), obtenerMiMembresia() devuelve nullable
+- main.dart: ruta /register agregada
+- app_config.dart: IP configurada segun red actual (cambia con cada red)
+
+--- DESPLIEGUE / REDES ---
+- Regla de Firewall Windows creada para puerto 3000
+- Cloudflare Tunnel activo (URL cambia al reiniciar cloudflared)
+- App corriendo en Xiaomi (9TTOB6AEWKPNUCGQ) y Samsung S24 Ultra (R5CY23B2QDW) via USB
+
+--- CREDENCIALES ---
+- Admin web: admin@hectorgym.com / Admin123
+- MySQL password: Komodino6664@
+
+===================================================

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HECTORGYM - Membresías</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body data-page="membresias">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <i class="fas fa-dumbbell icon"></i>
+            <span>HECTOR<span class="gym">GYM</span></span>
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="clientes.html"><i class="fas fa-users"></i> Clientes</a></li>
+            <li><a href="membresias.html" class="active"><i class="fas fa-id-card"></i> Membresías</a></li>
+            <li><a href="pagos.html"><i class="fas fa-money-bill-wave"></i> Pagos</a></li>
+            <li><a href="rutinas.html"><i class="fas fa-clipboard-list"></i> Rutinas</a></li>
+            <li><a href="maquinas.html"><i class="fas fa-cog"></i> Máquinas</a></li>
+        </ul>
+        <button class="btn btn-logout" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Salir
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-id-card"></i> Gestión de Membresías</h1>
+            <button class="btn btn-orange" onclick="document.getElementById('modalMembresia').classList.add('active')">
+                <i class="fas fa-plus"></i> Nueva Membresía
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card card-green" style="min-height: 100px">
+                <div>
+                    <div class="stat-label">Activas</div>
+                    <div class="stat-number" id="membresiasActivasStat">0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+            </div>
+            <div class="admin-stat-card card-red" style="min-height: 100px">
+                <div>
+                    <div class="stat-label">Vencidas</div>
+                    <div class="stat-number" id="membresiasVencidasStat">0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-times-circle"></i></div>
+            </div>
+            <div class="admin-stat-card card-yellow" style="min-height: 100px">
+                <div>
+                    <div class="stat-label">Próx. a vencer</div>
+                    <div class="stat-number" id="membresiasProximasStat">0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            </div>
+            <div class="admin-stat-card card-blue" style="min-height: 100px">
+                <div>
+                    <div class="stat-label">Ingresos mes</div>
+                    <div class="stat-number" id="membresiasIngresosStat">COP 0</div>
+                </div>
+                <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="membresiasSearch" placeholder="Buscar membresía por cliente...">
+            </div>
+            <select class="filter-select" id="membresiasEstadoFilter">
+                <option value="todos">Todos los estados</option>
+                <option value="activa">Activa</option>
+                <option value="vencida">Vencida</option>
+                <option value="proxima_a_vencer">Próxima a vencer</option>
+            </select>
+            <select class="filter-select" id="membresiasPlanFilter">
+                <option value="todos">Todos los planes</option>
+            </select>
+        </div>
+
+        <!-- Memberships Table -->
+        <div class="admin-table-card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Plan</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Estado</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="membresiasTableBody">
+                    <tr><td colspan="7"><div class="empty-state"><i class="fas fa-id-card"></i><p>Cargando membresías...</p></div></td></tr>
+                </tbody>
+            </table>
+            <div class="table-footer">
+                <span id="membresiasTotalInfo">Mostrando 0 membresías</span>
+                <span id="membresiasResumenInfo">0 activas · 0 vencidas · 0 próx. a vencer</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal: Nueva Membresía -->
+    <div class="modal-overlay" id="modalMembresia">
+        <div class="modal">
+            <div class="modal-header">
+                <span><i class="fas fa-id-card"></i> Nueva Membresía</span>
+                <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="membresiaForm">
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <select class="form-control" name="usuario_id" id="membresiaUsuarioSelect">
+                        <option value="">Seleccionar cliente...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Plan</label>
+                    <select class="form-control" name="tipo_id" id="membresiaTipoSelect">
+                        <option value="">Seleccionar plan...</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha Inicio</label>
+                        <input type="date" class="form-control" name="fecha_inicio" value="2026-04-10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea class="form-control" rows="3" placeholder="Notas adicionales..."></textarea>
+                </div>
+                <div class="status-message status-info" id="membresiaFormStatus">La fecha fin se calcula automáticamente desde el backend.</div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('modalMembresia').classList.remove('active')">Cancelar</button>
+                    <button type="submit" class="btn btn-orange"><i class="fas fa-save"></i> Registrar Membresía</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Nav -->
+    <nav class="admin-footer">
+        <a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="clientes.html"><i class="fas fa-users"></i> Clientes</a>
+        <a href="membresias.html" class="active"><i class="fas fa-id-card"></i> Membresías</a>
+        <a href="pagos.html"><i class="fas fa-money-bill-wave"></i> Pagos</a>
+        <a href="rutinas.html"><i class="fas fa-clipboard-list"></i> Rutinas</a>
+        <a href="maquinas.html"><i class="fas fa-cog"></i> Máquinas</a>
+    </nav>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

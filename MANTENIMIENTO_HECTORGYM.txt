@@ -1,0 +1,92 @@
+===================================================
+         HECTORGYM - INFORME DE MANTENIMIENTO
+===================================================
+
+DESCRIPCIÓN DEL SISTEMA
+-------------------------
+HECTORGYM es un sistema de gestión para gimnasios compuesto por:
+- Backend Node.js + Express con base de datos MySQL en puerto 3000
+- Panel web administrador (6 módulos: clientes, membresías, pagos,
+  rutinas, máquinas, dashboard)
+- Aplicación móvil Android desarrollada en Flutter con módulos de
+  login, registro y dashboard del miembro
+- Despliegue en red local con acceso desde dispositivos Android
+
+
+CONTEXTO DEL MANTENIMIENTO
+----------------------------
+Durante el ciclo de vida del proyecto, el sistema no presentó
+fallos funcionales en su lógica de negocio. Sin embargo, fue
+necesario realizar una serie de intervenciones técnicas derivadas
+de cambios en el entorno de operación: la infraestructura de red,
+el sistema operativo anfitrión y los dispositivos de acceso.
+Estas intervenciones buscaron garantizar la continuidad operativa
+del sistema ante condiciones externas cambiantes.
+
+
+INTERVENCIONES REALIZADAS
+---------------------------
+
+1. GESTIÓN DE DIRECCIÓN IP DEL SERVIDOR
+   El servidor backend opera en el equipo del administrador. Al
+   cambiar de red (WiFi residencial, punto de acceso móvil Android,
+   punto de acceso iPhone), la dirección IP del equipo varía
+   automáticamente. Dado que la aplicación móvil referencia esa IP
+   directamente en su configuración, cada cambio de entorno de red
+   requirió actualizar el archivo de configuración y generar una
+   nueva compilación del APK para redistribuirlo.
+   Entornos atendidos: 192.168.1.7 → 10.142.51.252 → 10.45.230.252 → 172.20.10.5
+
+2. INTEGRACIÓN DE NUEVO DISPOSITIVO ANDROID
+   Se incorporó un segundo dispositivo de prueba (Samsung S24 Ultra)
+   al entorno de despliegue. Para lograrlo fue necesario habilitar
+   las opciones de desarrollador del equipo, activar la depuración
+   por USB y establecer la conexión directa con el entorno de
+   desarrollo mediante ADB. La instalación se realizó vía
+   "flutter run" sin depender de la red local.
+
+3. IMPLEMENTACIÓN DE ACCESO EXTERNO MEDIANTE TÚNEL
+   Para resolver la dependencia de IP local y permitir el acceso
+   desde cualquier red, se configuró un túnel de red a través de
+   Cloudflare, exponiendo el backend con una URL pública estable.
+   Esto desacopló la operación del sistema del entorno de red
+   específico donde está alojado el servidor.
+
+4. CONFIGURACIÓN DEL SISTEMA OPERATIVO ANFITRIÓN
+   El Firewall de Windows bloqueaba el tráfico entrante al puerto
+   3000 desde los dispositivos Android en la misma red. Se creó
+   una regla de entrada TCP para ese puerto, ajustando la
+   configuración del sistema operativo a los requisitos de
+   comunicación del proyecto.
+
+5. ACTUALIZACIÓN DE POLÍTICA DE CACHÉ DEL SERVIDOR WEB
+   El Service Worker de la aplicación web estaba configurado con
+   política cache-first, lo que provocaba que los clientes
+   recibieran versiones desactualizadas de los archivos al cambiar
+   de entorno. Se migró a política network-first y se incrementó
+   la versión del caché a "hectorgym-v3" para alinearlo con el
+   ritmo de cambios del entorno de desarrollo.
+
+
+TABLA DE ACTIVIDADES
+----------------------------------------------------
+N° | Actividad               | Causa                          | Resultado
+---|-------------------------|--------------------------------|------------------
+1  | Actualización de IP     | Cambio de red de trabajo       | APK recompilado
+2  | Nuevo dispositivo       | Incorporación de Samsung S24   | App desplegada
+3  | Túnel de acceso externo | IP inestable entre entornos    | URL fija activa
+4  | Regla de Firewall       | Bloqueo de puerto 3000         | Comunicación OK
+5  | Service Worker v3       | Caché desactualizado           | Archivos frescos
+
+
+CONCLUSIÓN
+-----------
+Las intervenciones realizadas no surgieron de errores en el código
+ni de nuevos requerimientos funcionales del cliente. Fueron
+respuestas directas a transformaciones en el entorno tecnológico
+donde opera el sistema. Cada cambio de red, dispositivo o
+configuración del sistema operativo obligó a ajustar el software
+para mantener su correcto funcionamiento, lo cual define
+claramente el enfoque de este tipo de mantenimiento.
+
+===================================================
