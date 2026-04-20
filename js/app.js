@@ -1868,6 +1868,71 @@ async function initMaquinasPage() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
+
+  // ── Menú hamburguesa para páginas admin ──────────────────────────────────
+  const adminPages = ['index', 'clientes', 'membresias', 'pagos', 'rutinas', 'maquinas'];
+  if (adminPages.includes(page)) {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      // Botón hamburguesa
+      const hamburger = document.createElement('button');
+      hamburger.className = 'navbar-hamburger';
+      hamburger.setAttribute('aria-label', 'Menú');
+      hamburger.innerHTML = '<span></span><span></span><span></span>';
+      navbar.insertBefore(hamburger, navbar.querySelector('.navbar-nav') || navbar.firstChild.nextSibling);
+
+      // Drawer
+      const navLinks = [
+        { href: 'index.html',      icon: 'fas fa-chart-pie',         label: 'Dashboard' },
+        { href: 'clientes.html',   icon: 'fas fa-users',             label: 'Clientes' },
+        { href: 'membresias.html', icon: 'fas fa-id-card',           label: 'Membresías' },
+        { href: 'pagos.html',      icon: 'fas fa-money-bill-wave',   label: 'Pagos' },
+        { href: 'rutinas.html',    icon: 'fas fa-clipboard-list',    label: 'Rutinas' },
+        { href: 'maquinas.html',   icon: 'fas fa-cog',               label: 'Máquinas' },
+      ];
+
+      const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+
+      const drawer = document.createElement('div');
+      drawer.className = 'mobile-nav-drawer';
+      drawer.innerHTML = `
+        <div class="mobile-nav-overlay"></div>
+        <div class="mobile-nav-panel">
+          <div class="mobile-nav-brand">
+            <i class="fas fa-dumbbell"></i>
+            <span>HECTOR<span class="gym">GYM</span></span>
+          </div>
+          <nav>
+            ${navLinks.map(l => `
+              <a href="${l.href}" class="${currentFile === l.href ? 'active' : ''}">
+                <i class="${l.icon}"></i> ${l.label}
+              </a>`).join('')}
+          </nav>
+          <div class="mobile-nav-user" id="mobileNavUser"></div>
+        </div>`;
+      document.body.appendChild(drawer);
+
+      // Mostrar usuario en drawer
+      const mobileNavUser = drawer.querySelector('#mobileNavUser');
+      const user = appState.user;
+      if (user && mobileNavUser) {
+        mobileNavUser.innerHTML = `<i class="fas fa-user-circle"></i> ${escapeHtml(user.nombre || user.correo)}`;
+      }
+
+      // Abrir/cerrar drawer
+      const openDrawer = () => drawer.classList.add('open');
+      const closeDrawer = () => drawer.classList.remove('open');
+
+      hamburger.addEventListener('click', openDrawer);
+      drawer.querySelector('.mobile-nav-overlay').addEventListener('click', closeDrawer);
+
+      // Cerrar con Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDrawer();
+      });
+    }
+  }
+  // ── Fin hamburguesa ──────────────────────────────────────────────────────
   if (page === 'login') {
     initLoginPage();
   }
