@@ -15,6 +15,7 @@ const ejerciciosRoutes = require('./routes/ejercicios');
 const maquinasRoutes   = require('./routes/maquinas');
 
 const app = express();
+app.set('trust proxy', 1); // Railway usa reverse proxy
 const frontendRoot = path.resolve(__dirname, '../..');
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
