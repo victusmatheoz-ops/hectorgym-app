@@ -15,13 +15,17 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        html { height: auto; }
+        html, body { height: auto !important; overflow-x: hidden !important; }
         .login-body {
             display: block !important;
-            overflow-x: hidden !important;
-            overflow-y: visible !important;
+            overflow: visible !important;
             height: auto !important;
             min-height: 100vh;
+            /* fondo decorativo sin div que bloquee touch */
+            background:
+                radial-gradient(ellipse at 50% -10%, rgba(229,57,53,0.12) 0%, transparent 60%),
+                repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(229,57,53,0.03) 40px, rgba(229,57,53,0.03) 41px),
+                #080808 !important;
         }
         .login-wrapper {
             display: flex !important;
@@ -38,12 +42,6 @@
     </style>
 </head>
 <body data-page="login" class="login-body">
-
-    <div class="login-bg">
-        <!-- Fondo con patrón decorativo -->
-        <div class="login-bg-pattern"></div>
-        <div class="login-bg-glow"></div>
-    </div>
 
     <div class="login-wrapper">
 
