@@ -63,14 +63,14 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { nombre, apellido, correo, password, telefono, rol = 'usuario' } = req.body;
+    const { nombre, apellido, correo, password, telefono, documento, rol = 'usuario' } = req.body;
 
     // Hash de contraseña con coste 10 (equilibrio seguridad/velocidad)
     const password_hash = await bcrypt.hash(password, 10);
 
     const [result] = await db.query(
-      'INSERT INTO usuarios (nombre, apellido, correo, password_hash, telefono, rol) VALUES (?, ?, ?, ?, ?, ?)',
-      [nombre, apellido, correo, password_hash, telefono || null, rol]
+      'INSERT INTO usuarios (nombre, apellido, documento, correo, password_hash, telefono, rol) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [nombre, apellido, documento || null, correo, password_hash, telefono || null, rol]
     );
 
     res.status(201).json({

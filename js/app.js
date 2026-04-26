@@ -368,6 +368,7 @@ async function initLoginPage() {
         body: JSON.stringify({
           nombre: formData.get('nombre'),
           apellido: formData.get('apellido'),
+          documento: formData.get('documento') || undefined,
           correo: formData.get('correo'),
           password: formData.get('password'),
           telefono: formData.get('telefono') || undefined
