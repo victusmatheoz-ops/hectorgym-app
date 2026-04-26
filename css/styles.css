@@ -1250,12 +1250,13 @@ select.form-control { cursor: pointer; }
    ============================================================ */
 .login-body {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     min-height: 100vh;
     background: var(--bg-primary);
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .login-bg {
@@ -1293,11 +1294,12 @@ select.form-control { cursor: pointer; }
     z-index: 1;
     width: 100%;
     max-width: 440px;
-    padding: 24px;
+    padding: 40px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 28px;
+    margin: auto;
 }
 
 .login-brand {
