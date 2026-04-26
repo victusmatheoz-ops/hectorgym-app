@@ -831,13 +831,26 @@ async function initMembresiasPage() {
   }
 
   async function loadData() {
-    const [tiposData, membresiasData] = await Promise.all([
+    const [tiposData, membresiasData, pagosData] = await Promise.all([
       apiFetch('/membresias/tipos'),
-      apiFetch('/membresias')
+      apiFetch('/membresias'),
+      apiFetch('/pagos')
     ]);
 
     tipos = tiposData;
     membresias = membresiasData;
+
+    // Calcular ingresos reales del mes actual desde pagos
+    const ahora = new Date();
+    const mesActual = ahora.getMonth();
+    const anioActual = ahora.getFullYear();
+    const ingresosMes = (pagosData || []).reduce((sum, p) => {
+      const fecha = new Date(p.fecha);
+      if (fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual) {
+        return sum + Number(p.monto || 0);
+      }
+      return sum;
+    }, 0);
 
     if (planFilter) {
       planFilter.innerHTML = ['<option value="todos">Todos los planes</option>', ...tipos.map((tipo) => `
@@ -846,6 +859,9 @@ async function initMembresiasPage() {
     }
 
     applyFilters();
+
+    // Sobreescribir el stat con el ingreso real del mes
+    document.getElementById('membresiasIngresosStat').textContent = formatCurrency(ingresosMes);
   }
 
   searchInput?.addEventListener('input', applyFilters);
