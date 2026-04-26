@@ -304,10 +304,12 @@ async function initLoginPage() {
   document.getElementById('showRegisterBtn')?.addEventListener('click', () => {
     loginCard.style.display = 'none';
     registerCard.style.display = '';
+    window.scrollTo(0, 0);
   });
   document.getElementById('showLoginBtn')?.addEventListener('click', () => {
     registerCard.style.display = 'none';
     loginCard.style.display = '';
+    window.scrollTo(0, 0);
   });
 
   togglePass?.addEventListener('click', () => {
