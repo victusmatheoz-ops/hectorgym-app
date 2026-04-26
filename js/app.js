@@ -486,7 +486,7 @@ async function initClientesPage() {
               </div>
             </div>
           </td>
-          <td>${escapeHtml(cliente.id)}</td>
+          <td>${escapeHtml(cliente.documento || '-')}</td>
           <td>${escapeHtml(cliente.telefono || '-')}</td>
           <td><span class="badge ${badgeClass}">${escapeHtml(badgeLabel)}</span></td>
           <td>${escapeHtml(cliente.objetivo || '-')}</td>
@@ -651,7 +651,7 @@ async function initPortalPage() {
     document.getElementById('portalNotice').textContent = `Tu membresía tiene ${membresia.dias_restantes} día(s) restantes.`;
 
     document.getElementById('perfilNombreCompleto').textContent = `${perfil.nombre} ${perfil.apellido}`;
-    document.getElementById('perfilDocumento').textContent = perfil.id;
+    document.getElementById('perfilDocumento').textContent = perfil.documento || '-';
     document.getElementById('perfilEmail').textContent = perfil.correo;
     document.getElementById('perfilTelefono').textContent = perfil.telefono || '-';
     document.getElementById('perfilObservaciones').textContent = perfil.objetivo || 'Sin observaciones';

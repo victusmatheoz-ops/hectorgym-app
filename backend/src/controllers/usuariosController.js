@@ -9,7 +9,7 @@ exports.listar = async (req, res, next) => {
     // Incluimos el estado de membresía desde la vista
     const [rows] = await db.query(`
       SELECT
-        u.id, u.nombre, u.apellido, u.correo, u.telefono,
+        u.id, u.nombre, u.apellido, u.documento, u.correo, u.telefono,
         u.peso, u.estatura, u.objetivo, u.activo, u.fecha_registro,
         v.estado       AS estado_membresia,
         v.fecha_fin,
