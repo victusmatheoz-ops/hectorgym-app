@@ -441,7 +441,6 @@ async function initClientesPage() {
   const totalInfo = document.getElementById('clientesTotalInfo');
   const searchInput = document.getElementById('clientesSearch');
   const statusFilter = document.getElementById('clientesEstadoFilter');
-  const form = document.getElementById('clienteForm');
   const formStatus = document.getElementById('clienteFormStatus');
   let clientes = [];
 
@@ -600,40 +599,6 @@ async function initClientesPage() {
   searchInput?.addEventListener('input', applyFilters);
   statusFilter?.addEventListener('change', applyFilters);
 
-  form?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const formData = new FormData(form);
-    const [nombre = '', ...apellidoPartes] = String(formData.get('nombreCompleto') || '').trim().split(' ');
-    const apellido = apellidoPartes.join(' ') || 'Cliente';
-
-    if (!nombre) {
-      showMessage(formStatus, 'Escribe al menos un nombre para el cliente.');
-      return;
-    }
-
-    try {
-      await apiFetch('/usuarios', {
-        method: 'POST',
-        body: JSON.stringify({
-          nombre,
-          apellido,
-          correo: formData.get('correo'),
-          password: 'Password123',
-          telefono: formData.get('telefono'),
-          peso: formData.get('peso') || null,
-          estatura: formData.get('estatura') || null,
-          objetivo: formData.get('objetivo')
-        })
-      });
-      showMessage(formStatus, 'Cliente guardado. Password inicial: Password123', 'success');
-      form.reset();
-      closeModalById('modalCliente');
-      await loadClientes();
-    } catch (error) {
-      showMessage(formStatus, error.message);
-    }
-  });
-
   try {
     await loadClientes();
   } catch (error) {
@@ -778,12 +743,8 @@ async function initMembresiasPage() {
   const searchInput = document.getElementById('membresiasSearch');
   const estadoFilter = document.getElementById('membresiasEstadoFilter');
   const planFilter = document.getElementById('membresiasPlanFilter');
-  const form = document.getElementById('membresiaForm');
   const formStatus = document.getElementById('membresiaFormStatus');
-  const usuarioSelect = document.getElementById('membresiaUsuarioSelect');
-  const tipoSelect = document.getElementById('membresiaTipoSelect');
   let membresias = [];
-  let usuarios = [];
   let tipos = [];
 
   function updateStats(items) {
@@ -867,25 +828,13 @@ async function initMembresiasPage() {
   }
 
   async function loadData() {
-    const [usuariosData, tiposData, membresiasData] = await Promise.all([
-      apiFetch('/usuarios'),
+    const [tiposData, membresiasData] = await Promise.all([
       apiFetch('/membresias/tipos'),
       apiFetch('/membresias')
     ]);
 
-    usuarios = usuariosData;
     tipos = tiposData;
     membresias = membresiasData;
-
-    populateSelect(usuarioSelect, usuarios, {
-      placeholder: 'Seleccionar cliente',
-      label: (item) => `${item.nombre} ${item.apellido}`
-    });
-
-    populateSelect(tipoSelect, tipos, {
-      placeholder: 'Seleccionar plan',
-      label: (item) => `${item.nombre} - ${formatCurrency(item.precio)}`
-    });
 
     if (planFilter) {
       planFilter.innerHTML = ['<option value="todos">Todos los planes</option>', ...tipos.map((tipo) => `
@@ -963,29 +912,6 @@ async function initMembresiasPage() {
           await loadData();
         })
         .catch((error) => showMessage(formStatus, error.message));
-    }
-  });
-
-  form?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const formData = new FormData(form);
-
-    try {
-      await apiFetch('/membresias', {
-        method: 'POST',
-        body: JSON.stringify({
-          usuario_id: Number(formData.get('usuario_id')),
-          tipo_id: Number(formData.get('tipo_id')),
-          fecha_inicio: formData.get('fecha_inicio')
-        })
-      });
-
-      showMessage(formStatus, 'Membresía registrada correctamente.', 'success');
-      form.reset();
-      closeModalById('modalMembresia');
-      await loadData();
-    } catch (error) {
-      showMessage(formStatus, error.message);
     }
   });
 

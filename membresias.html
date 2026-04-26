@@ -34,9 +34,12 @@
         <!-- Page Header -->
         <div class="page-header">
             <h1><i class="fas fa-id-card"></i> Gestión de Membresías</h1>
-            <button class="btn btn-orange" onclick="document.getElementById('modalMembresia').classList.add('active')">
-                <i class="fas fa-plus"></i> Nueva Membresía
-            </button>
+            <a href="pagos.html" class="btn btn-orange">
+                <i class="fas fa-money-bill-wave"></i> Registrar Pago
+            </a>
+        </div>
+        <div class="status-message status-info" style="margin-bottom:1rem">
+            <i class="fas fa-info-circle"></i> Las membresías se crean o extienden automáticamente al registrar un pago. Desde esta vista puedes consultar el estado, editar fechas o eliminar una membresía.
         </div>
 
         <!-- Stats -->
@@ -114,46 +117,8 @@
 
     </div>
 
-    <!-- Modal: Nueva Membresía -->
-    <div class="modal-overlay" id="modalMembresia">
-        <div class="modal">
-            <div class="modal-header">
-                <span><i class="fas fa-id-card"></i> Nueva Membresía</span>
-                <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="membresiaForm">
-                <div class="form-group">
-                    <label>Cliente</label>
-                    <select class="form-control" name="usuario_id" id="membresiaUsuarioSelect">
-                        <option value="">Seleccionar cliente...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tipo de Plan</label>
-                    <select class="form-control" name="tipo_id" id="membresiaTipoSelect">
-                        <option value="">Seleccionar plan...</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Fecha Inicio</label>
-                        <input type="date" class="form-control" name="fecha_inicio" value="2026-04-10">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Observaciones</label>
-                    <textarea class="form-control" rows="3" placeholder="Notas adicionales..."></textarea>
-                </div>
-                <div class="status-message status-info" id="membresiaFormStatus">La fecha fin se calcula automáticamente desde el backend.</div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('modalMembresia').classList.remove('active')">Cancelar</button>
-                    <button type="submit" class="btn btn-orange"><i class="fas fa-save"></i> Registrar Membresía</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- status para edición de membresías -->
+    <div class="status-message" id="membresiaFormStatus" style="display:none"></div>
 
     <!-- Footer Nav -->
     <nav class="admin-footer">
