@@ -108,13 +108,19 @@ exports.actualizar = async (req, res, next) => {
 };
 
 // ──────────────────────────────────────────
-//  DELETE /api/usuarios/:id  (desactivar, no borrar)
+//  DELETE /api/usuarios/:id  (eliminar permanentemente)
 // ──────────────────────────────────────────
 exports.desactivar = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await db.query('UPDATE usuarios SET activo = 0 WHERE id = ?', [id]);
-    res.json({ message: 'Usuario desactivado' });
+
+    // Proteger al admin principal
+    const [rows] = await db.query('SELECT rol FROM usuarios WHERE id = ?', [id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+    if (rows[0].rol === 'admin') return res.status(403).json({ error: 'No se puede eliminar al administrador' });
+
+    await db.query('DELETE FROM usuarios WHERE id = ?', [id]);
+    res.json({ message: 'Usuario eliminado' });
   } catch (err) {
     next(err);
   }
