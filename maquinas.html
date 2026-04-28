@@ -124,9 +124,20 @@
                         </select>
                     </div>
                 </div>
+                <!-- Campo de imagen -->
                 <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea class="form-control" rows="3" placeholder="Descripción de la máquina..."></textarea>
+                    <label>Imagen de la Máquina <span style="color:var(--adm-muted,#666);font-weight:400">(opcional)</span></label>
+                    <div class="img-upload-area" id="imgUploadArea" onclick="document.getElementById('maquinaImgInput').click()">
+                        <i class="fas fa-camera"></i>
+                        <span>Haz clic para subir una foto</span>
+                        <small>JPG, PNG · máx. 5 MB</small>
+                    </div>
+                    <input type="file" id="maquinaImgInput" accept="image/*" style="display:none">
+                    <div class="img-preview-wrap" id="maquinaImgPreviewWrap" style="display:none">
+                        <img id="maquinaImgPreview" src="" alt="Vista previa">
+                        <button type="button" class="img-preview-remove" id="maquinaImgRemove" title="Quitar imagen">&times;</button>
+                    </div>
+                    <input type="hidden" name="imagen_url" id="maquinaImgData">
                 </div>
                 <div class="status-message status-info" id="maquinaFormStatus">Las máquinas se vinculan a ejercicios desde la API y los datos existentes.</div>
                 <div class="form-actions">
@@ -134,6 +145,32 @@
                     <button type="submit" class="btn btn-orange"><i class="fas fa-save"></i> Guardar Máquina</button>
                 </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Cambiar Imagen de Máquina -->
+    <div class="modal-overlay" id="modalImagenMaquina">
+        <div class="modal" style="max-width:420px">
+            <div class="modal-header">
+                <span><i class="fas fa-image"></i> <span id="modalImagenMaquinaTitulo">Cambiar imagen</span></span>
+                <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="img-upload-area" id="imgUploadAreaEdit" onclick="document.getElementById('maquinaImgInputEdit').click()">
+                    <i class="fas fa-camera"></i>
+                    <span>Haz clic para subir una foto</span>
+                    <small>JPG, PNG · máx. 5 MB</small>
+                </div>
+                <input type="file" id="maquinaImgInputEdit" accept="image/*" style="display:none">
+                <div class="img-preview-wrap" id="maquinaImgPreviewWrapEdit" style="display:none">
+                    <img id="maquinaImgPreviewEdit" src="" alt="Vista previa">
+                    <button type="button" class="img-preview-remove" id="maquinaImgRemoveEdit" title="Quitar imagen">&times;</button>
+                </div>
+                <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end">
+                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').classList.remove('active')">Cancelar</button>
+                    <button type="button" class="btn btn-orange" id="btnGuardarImagenMaquina"><i class="fas fa-save"></i> Guardar imagen</button>
+                </div>
             </div>
         </div>
     </div>

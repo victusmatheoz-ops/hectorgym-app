@@ -1595,6 +1595,60 @@ async function initMaquinasPage() {
   bindLogoutButtons();
   if (!requireAdmin()) return;
 
+  // ── Comprimir imagen con canvas ────────────────────────────────────────
+  function compressImage(file, maxWidth, quality, callback) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const ratio = Math.min(1, maxWidth / img.width);
+        const w = Math.round(img.width * ratio);
+        const h = Math.round(img.height * ratio);
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        callback(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Setup file input nueva máquina ────────────────────────────────────
+  const imgInput = document.getElementById('maquinaImgInput');
+  const imgData  = document.getElementById('maquinaImgData');
+  const previewWrap = document.getElementById('maquinaImgPreviewWrap');
+  const previewImg  = document.getElementById('maquinaImgPreview');
+  const removeBtn   = document.getElementById('maquinaImgRemove');
+  const uploadArea  = document.getElementById('imgUploadArea');
+
+  imgInput?.addEventListener('change', () => {
+    const file = imgInput.files[0];
+    if (!file) return;
+    compressImage(file, 800, 0.82, (dataUrl) => {
+      previewImg.src = dataUrl;
+      imgData.value = dataUrl;
+      previewWrap.style.display = '';
+      uploadArea.style.display = 'none';
+    });
+  });
+  removeBtn?.addEventListener('click', () => {
+    previewImg.src = '';
+    imgData.value = '';
+    previewWrap.style.display = 'none';
+    uploadArea.style.display = '';
+    imgInput.value = '';
+  });
+  // Limpiar al cerrar modal
+  document.querySelector('#modalMaquina .modal-close')?.addEventListener('click', () => {
+    previewImg.src = '';
+    imgData.value = '';
+    previewWrap.style.display = 'none';
+    uploadArea.style.display = '';
+    imgInput && (imgInput.value = '');
+  });
+
   const grid = document.getElementById('maquinasGrid');
   const searchInput = document.getElementById('maquinasSearch');
   const grupoFilter = document.getElementById('maquinasGrupoFilter');
@@ -1632,11 +1686,13 @@ async function initMaquinasPage() {
       return;
     }
 
-    grid.innerHTML = items.map((maquina) => `
+    grid.innerHTML = items.map((maquina) => {
+      const imgSection = maquina.imagen_url
+        ? `<div class="machine-card-img has-photo" style="background-image:url('${maquina.imagen_url}')"></div>`
+        : `<div class="machine-card-img"><i class="fas ${Number(maquina.activa) === 1 ? 'fa-dumbbell' : 'fa-screwdriver-wrench'}"></i></div>`;
+      return `
       <div class="machine-card">
-        <div class="machine-card-img">
-          <i class="fas ${Number(maquina.activa) === 1 ? 'fa-dumbbell' : 'fa-screwdriver-wrench'}"></i>
-        </div>
+        ${imgSection}
         <div class="machine-card-body">
           <h3>${escapeHtml(maquina.nombre)}</h3>
           <div class="machine-meta">
@@ -1650,12 +1706,14 @@ async function initMaquinasPage() {
           <div class="action-btns">
             <span class="badge badge-blue">${escapeHtml(maquina.total_ejercicios)} ejercicios</span>
             <button class="action-btn action-btn-edit" data-edit-machine="${maquina.id}" title="Editar máquina"><i class="fas fa-pen"></i></button>
+            <button class="action-btn" data-image-machine="${maquina.id}" title="Cambiar imagen" style="color:var(--text-secondary)"><i class="fas fa-image"></i></button>
             <button class="action-btn action-btn-view" data-toggle-machine="${maquina.id}" title="Cambiar estado"><i class="fas fa-power-off"></i></button>
             <button class="action-btn action-btn-delete" data-delete-machine="${maquina.id}" title="Eliminar máquina"><i class="fas fa-trash"></i></button>
           </div>
         </div>
       </div>
-    `).join('');
+    `;}
+    ).join('');
   }
 
   function applyFilters() {
@@ -1705,6 +1763,78 @@ async function initMaquinasPage() {
     const editButton = event.target.closest('[data-edit-machine]');
     const toggleButton = event.target.closest('[data-toggle-machine]');
     const deleteButton = event.target.closest('[data-delete-machine]');
+    const imageButton = event.target.closest('[data-image-machine]');
+
+    if (imageButton) {
+      const machine = maquinas.find((item) => Number(item.id) === Number(imageButton.dataset.imageMachine));
+      if (!machine) return;
+
+      const overlay = document.getElementById('modalImagenMaquina');
+      const titulo = document.getElementById('modalImagenMaquinaTitulo');
+      const fileInput = document.getElementById('maquinaImgInputEdit');
+      const previewWrap = document.getElementById('maquinaImgPreviewWrapEdit');
+      const previewImg = document.getElementById('maquinaImgPreviewEdit');
+      const removeBtn = document.getElementById('maquinaImgRemoveEdit');
+      const uploadArea = document.getElementById('imgUploadAreaEdit');
+      const saveBtn = document.getElementById('btnGuardarImagenMaquina');
+
+      titulo.textContent = `Imagen — ${machine.nombre}`;
+      fileInput.value = '';
+      previewWrap.style.display = 'none';
+      previewImg.src = '';
+      uploadArea.style.display = '';
+      if (machine.imagen_url) {
+        previewImg.src = machine.imagen_url;
+        previewWrap.style.display = '';
+        uploadArea.style.display = 'none';
+      }
+      overlay.classList.add('active');
+
+      // Nuevo listener de archivo (limpiamos clonando)
+      const newFileInput = fileInput.cloneNode(true);
+      fileInput.parentNode.replaceChild(newFileInput, fileInput);
+      newFileInput.addEventListener('change', () => {
+        const file = newFileInput.files[0];
+        if (!file) return;
+        compressImage(file, 800, 0.82, (dataUrl) => {
+          previewImg.src = dataUrl;
+          previewWrap.style.display = '';
+          uploadArea.style.display = 'none';
+        });
+      });
+
+      removeBtn.onclick = () => {
+        previewImg.src = '';
+        previewWrap.style.display = 'none';
+        uploadArea.style.display = '';
+        newFileInput.value = '';
+      };
+
+      // Botón guardar (limpiamos clonando)
+      const newSaveBtn = saveBtn.cloneNode(true);
+      saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+      newSaveBtn.addEventListener('click', async () => {
+        const imgData = previewImg.src && previewImg.src !== window.location.href ? previewImg.src : null;
+        newSaveBtn.disabled = true;
+        newSaveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+        try {
+          await apiFetch(`/maquinas/${machine.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ imagen_url: imgData })
+          });
+          showMessage(formStatus, 'Imagen actualizada correctamente.', 'success');
+          overlay.classList.remove('active');
+          await loadData();
+        } catch (err) {
+          showMessage(formStatus, err.message);
+        } finally {
+          newSaveBtn.disabled = false;
+          newSaveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar imagen';
+        }
+      });
+
+      return;
+    }
 
     if (editButton) {
       const machine = maquinas.find((item) => Number(item.id) === Number(editButton.dataset.editMachine));
@@ -1784,12 +1914,18 @@ async function initMaquinasPage() {
         body: JSON.stringify({
           nombre: formData.get('nombre'),
           descripcion: formData.get('descripcion'),
-          activa: Number(formData.get('activa'))
+          activa: Number(formData.get('activa')),
+          imagen_url: formData.get('imagen_url') || null
         })
       });
 
       showMessage(formStatus, 'Máquina registrada correctamente.', 'success');
       form.reset();
+      if (imgData) imgData.value = '';
+      if (previewImg) previewImg.src = '';
+      if (previewWrap) previewWrap.style.display = 'none';
+      if (uploadArea) uploadArea.style.display = '';
+      if (imgInput) imgInput.value = '';
       closeModalById('modalMaquina');
       await loadData();
     } catch (error) {

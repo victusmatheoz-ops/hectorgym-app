@@ -27,15 +27,15 @@ exports.listar = async (req, res, next) => {
 
 exports.crear = async (req, res, next) => {
   try {
-    const { nombre, descripcion, activa = 1 } = req.body;
+    const { nombre, descripcion, activa = 1, imagen_url } = req.body;
 
     if (!nombre) {
       return res.status(400).json({ error: 'El nombre de la máquina es requerido' });
     }
 
     const [result] = await db.query(
-      'INSERT INTO maquinas (nombre, descripcion, activa) VALUES (?, ?, ?)',
-      [nombre, descripcion || null, activa ? 1 : 0]
+      'INSERT INTO maquinas (nombre, descripcion, activa, imagen_url) VALUES (?, ?, ?, ?)',
+      [nombre, descripcion || null, activa ? 1 : 0, imagen_url || null]
     );
 
     res.status(201).json({ message: 'Máquina creada', id: result.insertId });
@@ -47,15 +47,19 @@ exports.crear = async (req, res, next) => {
 exports.actualizar = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, activa } = req.body;
+    const { nombre, descripcion, activa, imagen_url } = req.body;
 
     await db.query(
       `UPDATE maquinas
        SET nombre      = COALESCE(?, nombre),
            descripcion = COALESCE(?, descripcion),
-           activa      = COALESCE(?, activa)
+           activa      = COALESCE(?, activa),
+           imagen_url  = CASE WHEN ? IS NOT NULL THEN ? ELSE imagen_url END
        WHERE id = ?`,
-      [nombre, descripcion, typeof activa === 'undefined' ? null : (activa ? 1 : 0), id]
+      [nombre, descripcion, typeof activa === 'undefined' ? null : (activa ? 1 : 0),
+       typeof imagen_url === 'undefined' ? null : imagen_url,
+       typeof imagen_url === 'undefined' ? null : imagen_url,
+       id]
     );
 
     res.json({ message: 'Máquina actualizada' });

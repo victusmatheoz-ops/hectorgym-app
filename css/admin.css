@@ -757,6 +757,74 @@ body:not([data-page="landing"]):not([data-page="login"]) {
 }
 
 /* ============================================================
+   IMAGE UPLOAD (máquinas)
+   ============================================================ */
+.img-upload-area {
+  border: 2px dashed rgba(255,255,255,0.12) !important;
+  border-radius: 10px !important;
+  padding: 28px 20px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  color: rgba(255,255,255,0.35) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.img-upload-area:hover {
+  border-color: var(--adm-red) !important;
+  background: rgba(229,57,53,0.04) !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+.img-upload-area i { font-size: 1.6rem !important; }
+.img-upload-area span { font-size: 0.85rem !important; font-weight: 600 !important; }
+.img-upload-area small { font-size: 0.72rem !important; opacity: 0.6 !important; }
+
+.img-preview-wrap {
+  position: relative !important;
+  margin-top: 10px !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--adm-border) !important;
+  line-height: 0 !important;
+}
+.img-preview-wrap img {
+  width: 100% !important;
+  max-height: 220px !important;
+  object-fit: cover !important;
+  border-radius: 10px !important;
+  display: block !important;
+}
+.img-preview-remove {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  background: rgba(0,0,0,0.7) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  transition: background 0.2s !important;
+}
+.img-preview-remove:hover { background: var(--adm-red) !important; }
+
+/* Machine card con foto real */
+.machine-card-img.has-photo {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+.machine-card-img.has-photo i { display: none !important; }
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 768px) {
