@@ -39,9 +39,54 @@
             position: relative !important;
             z-index: 1 !important;
         }
+    /* ── Splash login ────────────────────────── */
+    #loginSplash {
+        position: fixed; inset: 0; z-index: 9999;
+        background: #000;
+        display: flex; align-items: center; justify-content: center;
+        flex-direction: column; gap: 16px;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #loginSplash.out { opacity: 0; visibility: hidden; }
+    .lspl-logo {
+        width: 70px; height: 70px;
+        background: linear-gradient(135deg, #c62828, #e53935);
+        border-radius: 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px; color: #fff;
+        box-shadow: 0 0 40px rgba(229,57,53,0.4);
+        animation: lsplPulse 1s ease-in-out infinite alternate;
+    }
+    @keyframes lsplPulse {
+        from { box-shadow: 0 0 20px rgba(229,57,53,0.3); transform: scale(1); }
+        to   { box-shadow: 0 0 60px rgba(229,57,53,0.6); transform: scale(1.04); }
+    }
+    .lspl-title {
+        font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+        font-size: 2.4rem; letter-spacing: 6px; color: #fff;
+    }
+    .lspl-title span { color: #e53935; }
+    .lspl-bar {
+        width: 160px; height: 2px;
+        background: rgba(255,255,255,0.1); border-radius: 1px; overflow: hidden;
+    }
+    .lspl-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #c62828, #e53935);
+        animation: lsplLoad 1.6s ease-in-out forwards;
+        width: 0;
+    }
+    @keyframes lsplLoad { 0%{width:0} 70%{width:85%} 100%{width:100%} }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 <body data-page="login" class="login-body">
+
+    <div id="loginSplash">
+        <div class="lspl-logo"><i class="fas fa-dumbbell"></i></div>
+        <div class="lspl-title">HECTOR<span>GYM</span></div>
+        <div class="lspl-bar"><div class="lspl-bar-fill"></div></div>
+    </div>
 
     <div class="login-wrapper">
 
@@ -188,6 +233,17 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(() => {});
         }
+        // Splash screen
+        (function() {
+            var s = document.getElementById('loginSplash');
+            if (!s) return;
+            document.body.style.overflow = 'hidden';
+            setTimeout(function() {
+                s.classList.add('out');
+                document.body.style.overflow = '';
+                setTimeout(function() { s.remove(); }, 550);
+            }, 1800);
+        })();
     </script>
 
 </body>
