@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initSplash();
   initParticles();
-  AOS.init({ duration: 700, once: true, offset: 80 });
+  try { AOS.init({ duration: 700, once: true, offset: 80 }); } catch(_) {}
   initNavbar();
   initSmoothScroll();
   initCounters();
