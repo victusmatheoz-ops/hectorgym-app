@@ -94,6 +94,7 @@ const html = `<!DOCTYPE html>
 <div class="toc">
   <h2>Contenido</h2>
   <div class="toc-grid">
+    <a href="#s0" class="toc-item"><span class="toc-num">00</span><span class="toc-label">Pantalla de carga (Splash)</span></a>
     <a href="#s1" class="toc-item"><span class="toc-num">01</span><span class="toc-label">Página principal del gimnasio</span></a>
     <a href="#s2" class="toc-item"><span class="toc-num">02</span><span class="toc-label">Inicio de sesión</span></a>
     <a href="#s3" class="toc-item"><span class="toc-num">03</span><span class="toc-label">Dashboard de administración</span></a>
@@ -104,6 +105,35 @@ const html = `<!DOCTYPE html>
     <a href="#s8" class="toc-item"><span class="toc-num">08</span><span class="toc-label">Catálogo de máquinas</span></a>
     <a href="#s9" class="toc-item"><span class="toc-num">09</span><span class="toc-label">Portal del cliente</span></a>
   </div>
+</div>
+
+<hr class="divider">
+
+<!-- 00 — SPLASH -->
+<div class="section" id="s0">
+  <div class="section-header">
+    <div class="section-num">00</div>
+    <div>
+      <div class="section-title">Pantalla de carga</div>
+      <div class="section-desc">Lo primero que ve cualquier usuario al abrir el sistema</div>
+    </div>
+  </div>
+  <div class="screen-block">
+    <div class="screen-label">▶ Splash screen — landing.html (animación inicial)</div>
+    <img class="screen-img" src="${imgs['00_splash']}" alt="Pantalla de carga HECTORGYM">
+    <div class="screen-caption">Al ingresar al sitio web del gimnasio, aparece automáticamente esta pantalla de presentación animada durante 2-3 segundos. Muestra el logo, el nombre HECTORGYM y el slogan "Forjando Campeones" con una barra de carga y partículas en movimiento. Luego da paso a la página principal.</div>
+  </div>
+  <div class="module-intro">
+    <div class="module-card">
+      <h4>Elementos de la pantalla</h4>
+      <p>Logo con ícono de pesas · Título <strong style="color:#fff">HECTOR<span style="color:var(--red)">GYM</span></strong> · Barra de progreso animada · Slogan "Forjando Campeones" · Partículas flotantes en el fondo</p>
+    </div>
+    <div class="module-card">
+      <h4>Comportamiento</h4>
+      <p>La animación dura aproximadamente 2.5 segundos y se reproduce automáticamente al cargar la página. No requiere ninguna acción del usuario — desaparece sola y muestra la página principal.</p>
+    </div>
+  </div>
+  <div class="tip tip-blue"><strong>Nota técnica:</strong> El splash solo aparece la primera vez que el usuario visita la página en cada sesión del navegador. En accesos posteriores durante la misma sesión, se salta directamente a la página principal.</div>
 </div>
 
 <hr class="divider">
