@@ -54,8 +54,8 @@ app.use(cors({
   },
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Archivos estáticos del prototipo web
 app.use(express.static(frontendRoot));
@@ -121,6 +121,11 @@ app.use(errorHandler);
 //  Iniciar servidor
 // ──────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ HECTORGYM API corriendo en http://localhost:${PORT}`);
-});
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`✅ HECTORGYM API corriendo en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

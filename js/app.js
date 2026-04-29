@@ -1783,6 +1783,9 @@ async function initMaquinasPage() {
       previewWrap.style.display = 'none';
       previewImg.src = '';
       uploadArea.style.display = '';
+      // Variable para rastrear la imagen actual (evita problemas con previewImg.src resuelto por el browser)
+      let currentImgData = machine.imagen_url || null;
+
       if (machine.imagen_url) {
         previewImg.src = machine.imagen_url;
         previewWrap.style.display = '';
@@ -1797,6 +1800,7 @@ async function initMaquinasPage() {
         const file = newFileInput.files[0];
         if (!file) return;
         compressImage(file, 800, 0.82, (dataUrl) => {
+          currentImgData = dataUrl;
           previewImg.src = dataUrl;
           previewWrap.style.display = '';
           uploadArea.style.display = 'none';
@@ -1804,6 +1808,7 @@ async function initMaquinasPage() {
       });
 
       removeBtn.onclick = () => {
+        currentImgData = null;
         previewImg.src = '';
         previewWrap.style.display = 'none';
         uploadArea.style.display = '';
@@ -1814,13 +1819,12 @@ async function initMaquinasPage() {
       const newSaveBtn = saveBtn.cloneNode(true);
       saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
       newSaveBtn.addEventListener('click', async () => {
-        const imgData = previewImg.src && previewImg.src !== window.location.href ? previewImg.src : null;
         newSaveBtn.disabled = true;
         newSaveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
         try {
           await apiFetch(`/maquinas/${machine.id}`, {
             method: 'PUT',
-            body: JSON.stringify({ imagen_url: imgData })
+            body: JSON.stringify({ imagen_url: currentImgData })
           });
           showMessage(formStatus, 'Imagen actualizada correctamente.', 'success');
           overlay.classList.remove('active');
