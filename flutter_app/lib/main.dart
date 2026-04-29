@@ -5,6 +5,7 @@ import 'screens/home_gate.dart';
 import 'screens/login_screen.dart';
 import 'screens/member_dashboard_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,7 +119,7 @@ class HectorGymApp extends StatelessWidget {
         '/register': (_) => const RegisterScreen(),
         '/member-dashboard': (_) => const MemberDashboardScreen(),
       },
-      home: const HomeGate(),
+      home: const SplashScreen(),
     );
   }
 }
