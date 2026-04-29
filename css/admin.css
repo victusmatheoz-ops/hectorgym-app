@@ -835,6 +835,87 @@ body:not([data-page="landing"]):not([data-page="login"]) {
 }
 
 /* ============================================================
+   RESPONSIVE MOBILE — Fixes para Android/iOS
+   ============================================================ */
+
+/* 1. Stats grid: siempre 2 columnas en móvil, nunca 1 */
+@media (max-width: 480px) {
+  .admin-stats-grid { grid-template-columns: 1fr 1fr !important; }
+  .stats-grid       { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* 2. Page header: wrap en pantallas pequeñas */
+@media (max-width: 560px) {
+  .page-header {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 20px !important;
+  }
+  .page-header h1 {
+    font-size: 1.15rem !important;
+    letter-spacing: 1.5px !important;
+    gap: 8px !important;
+  }
+  .page-header-note { display: none !important; }
+}
+
+/* 3. Filtros: apilar verticalmente en móvil */
+@media (max-width: 640px) {
+  .toolbar {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .search-box {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+  .filter-select {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+}
+
+/* 4. Tablas: scroll horizontal en móvil */
+@media (max-width: 768px) {
+  .admin-table-card {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .admin-table {
+    min-width: 560px !important;
+    font-size: 0.82rem !important;
+  }
+  .admin-table th,
+  .admin-table td {
+    padding: 10px 12px !important;
+    white-space: nowrap !important;
+  }
+  /* Avatar más pequeño en móvil */
+  .client-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    font-size: 0.65rem !important;
+  }
+}
+
+/* 5. Máquinas: 1 columna en pantallas pequeñas */
+@media (max-width: 560px) {
+  .machines-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 6. Ajustes generales de espaciado en móvil */
+@media (max-width: 480px) {
+  .main-container { padding: 16px 12px 32px !important; }
+  .section-card   { padding: 16px !important; }
+  .admin-stat-card { padding: 14px 16px !important; }
+  .admin-stat-card .stat-number { font-size: 2.2rem !important; }
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 768px) {
