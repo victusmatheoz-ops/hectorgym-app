@@ -824,6 +824,16 @@ body:not([data-page="landing"]):not([data-page="login"]) {
 }
 .machine-card-img.has-photo i { display: none !important; }
 
+/* Footer de máquina: wrap para que los botones no queden ocultos cuando
+   el badge "En mantenimiento" ocupa más espacio que "Disponible" */
+.machine-card-footer {
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+.machine-card-footer .action-btns {
+  flex-shrink: 0 !important;
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
