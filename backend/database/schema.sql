@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS maquinas (
   id            INT AUTO_INCREMENT PRIMARY KEY,
   nombre        VARCHAR(150) NOT NULL,
   descripcion   TEXT,
-  imagen_url    VARCHAR(255),
+  imagen_url    LONGTEXT,
   activa        TINYINT(1)   NOT NULL DEFAULT 1
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS ejercicios (
   nombre          VARCHAR(150)  NOT NULL,
   descripcion     TEXT,
   grupo_muscular  VARCHAR(100),    -- ej: "Pecho", "Piernas", "Espalda"
-  imagen_url      VARCHAR(255),
+  imagen_url      LONGTEXT,
   video_url       VARCHAR(255)
 );
 

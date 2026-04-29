@@ -19,10 +19,18 @@ if (pool.pool) {
   });
 }
 
-// Verifica la conexión al iniciar
+// Verifica la conexión y aplica migraciones al iniciar
 pool.getConnection()
-  .then(conn => {
+  .then(async conn => {
     console.log('✅ Conexión a MySQL establecida');
+    // Migración: asegurar que imagen_url soporte base64 (LONGTEXT)
+    try {
+      await conn.query('ALTER TABLE maquinas MODIFY COLUMN imagen_url LONGTEXT');
+      await conn.query('ALTER TABLE ejercicios MODIFY COLUMN imagen_url LONGTEXT');
+      console.log('✅ Migración imagen_url aplicada');
+    } catch (e) {
+      // Ignorar si ya está en el tipo correcto
+    }
     conn.release();
   })
   .catch(err => {
