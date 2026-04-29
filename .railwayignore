@@ -1,5 +1,9 @@
-flutter_app/build/
-flutter_app/.dart_tool/
-flutter_app/.flutter-plugins-dependencies
+flutter_app/
 manual_imgs/
 node_modules/
+cloudflared.exe
+HectorGym.apk
+*.apk
+*.exe
+*.dill
+*.so
