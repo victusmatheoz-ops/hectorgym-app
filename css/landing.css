@@ -1205,7 +1205,8 @@ html {
     gap: 20px;
     border-bottom: 1px solid var(--hg-border);
   }
-  .hg-nav-hamburger { display: flex; }
+  .hg-nav-hamburger { display: flex; margin-left: 8px; }
+  .hg-nav-actions { margin-left: auto; }
   .hg-nav-actions .hg-btn-ghost { display: none; }
 
   .hg-hero-title { font-size: clamp(2.5rem, 12vw, 5rem); }
