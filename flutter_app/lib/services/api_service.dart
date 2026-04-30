@@ -12,6 +12,7 @@
 // ============================================================
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,16 +64,53 @@ class ApiService {
   }
 
   // ──────────────────────────────────────────
+  //  Helpers seguros: convierten errores de red en mensajes amigables
+  // ──────────────────────────────────────────
+  static Future<http.Response> _safePost(Uri uri, {Map<String, String>? headers, Object? body}) async {
+    try {
+      return await http.post(uri, headers: headers, body: body);
+    } on SocketException {
+      throw Exception('Sin acceso a internet. Conecta el WiFi o los datos móviles e intenta de nuevo.');
+    } on http.ClientException {
+      throw Exception('Sin acceso a internet. Conecta el WiFi o los datos móviles e intenta de nuevo.');
+    }
+  }
+
+  static Future<http.Response> _safeGet(Uri uri, {Map<String, String>? headers}) async {
+    try {
+      return await http.get(uri, headers: headers);
+    } on SocketException {
+      throw Exception('Sin acceso a internet. Conecta el WiFi o los datos móviles e intenta de nuevo.');
+    } on http.ClientException {
+      throw Exception('Sin acceso a internet. Conecta el WiFi o los datos móviles e intenta de nuevo.');
+    }
+  }
+
+  static Future<http.Response> _safePut(Uri uri, {Map<String, String>? headers, Object? body}) async {
+    try {
+      return await http.put(uri, headers: headers, body: body);
+    } on SocketException {
+      throw Exception('Sin acceso a internet. Conecta el WiFi o los datos móviles e intenta de nuevo.');
+    } on http.ClientException {
+      throw Exception('Sin acceso a internet. Conecta el WiFi o los datos móviles e intenta de nuevo.');
+    }
+  }
+
+  // ──────────────────────────────────────────
   //  AUTH
   // ──────────────────────────────────────────
 
   /// Inicia sesión y guarda el token automáticamente
   static Future<Map<String, dynamic>> login(String correo, String password) async {
-    final response = await http.post(
+    final response = await _safePost(
       Uri.parse('$_baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'correo': correo, 'password': password}),
     );
+
+    if (response.statusCode == 429) {
+      throw Exception('Demasiados intentos fallidos. Espera 15 minutos e intenta de nuevo.');
+    }
 
     final data = jsonDecode(response.body);
 
@@ -81,7 +119,7 @@ class ApiService {
       await guardarUsuario(Map<String, dynamic>.from(data['usuario']));
       return data;
     } else {
-      throw Exception(data['error'] ?? 'Error al iniciar sesión');
+      throw Exception(data['error'] ?? 'Credenciales incorrectas');
     }
   }
 
@@ -100,7 +138,7 @@ class ApiService {
     };
     if (telefono != null && telefono.isNotEmpty) body['telefono'] = telefono;
 
-    final response = await http.post(
+    final response = await _safePost(
       Uri.parse('$_baseUrl/auth/register'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
@@ -116,7 +154,7 @@ class ApiService {
   //  MEMBRESÍA DEL USUARIO ACTUAL
   // ──────────────────────────────────────────
   static Future<Map<String, dynamic>?> obtenerMiMembresia(int usuarioId) async {
-    final response = await http.get(
+    final response = await _safeGet(
       Uri.parse('$_baseUrl/membresias/usuario/$usuarioId'),
       headers: await _headers(),
     );
@@ -134,7 +172,7 @@ class ApiService {
   //  RUTINA DEL USUARIO ACTUAL
   // ──────────────────────────────────────────
   static Future<Map<String, dynamic>> obtenerMiRutina(int usuarioId) async {
-    final response = await http.get(
+    final response = await _safeGet(
       Uri.parse('$_baseUrl/rutinas/usuario/$usuarioId'),
       headers: await _headers(),
     );
@@ -148,10 +186,26 @@ class ApiService {
   }
 
   // ──────────────────────────────────────────
+  //  MÁQUINAS DEL GYM
+  // ──────────────────────────────────────────
+  static Future<List<dynamic>> obtenerMaquinas() async {
+    final response = await _safeGet(
+      Uri.parse('$_baseUrl/maquinas'),
+      headers: await _headers(),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('No se pudo obtener las máquinas');
+    }
+  }
+
+  // ──────────────────────────────────────────
   //  HISTORIAL DE PAGOS DEL USUARIO
   // ──────────────────────────────────────────
   static Future<List<dynamic>> obtenerMisPagos(int usuarioId) async {
-    final response = await http.get(
+    final response = await _safeGet(
       Uri.parse('$_baseUrl/pagos/usuario/$usuarioId'),
       headers: await _headers(),
     );

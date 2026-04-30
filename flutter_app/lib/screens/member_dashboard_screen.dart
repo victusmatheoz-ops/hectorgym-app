@@ -3,9 +3,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../services/api_service.dart';
 import 'tabs/home_tab.dart';
-import 'tabs/rutina_tab.dart';
+import 'tabs/maquinas_tab.dart';
 import 'tabs/pagos_tab.dart';
 import 'tabs/perfil_tab.dart';
+import 'tabs/rutina_tab.dart';
 
 class MemberDashboardScreen extends StatefulWidget {
   const MemberDashboardScreen({super.key});
@@ -69,7 +70,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
     Navigator.pushReplacementNamed(context, '/login');
   }
 
-  static const _titles = ['Inicio', 'Mi Rutina', 'Pagos', 'Perfil'];
+  static const _titles = ['Inicio', 'Máquinas', 'Mi Rutina', 'Pagos', 'Perfil'];
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +124,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
 
     final tabs = [
       HomeTab(user: _user!, membership: _membership),
+      const MaquinasTab(),
       RutinaTab(rutina: _routine),
       PagosTab(pagos: _payments),
       PerfilTab(user: _user!, membership: _membership, onLogout: _logout),
@@ -195,6 +197,11 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Inicio',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.sports_gymnastics_outlined),
+            selectedIcon: Icon(Icons.sports_gymnastics),
+            label: 'Máquinas',
           ),
           NavigationDestination(
             icon: Icon(Icons.fitness_center_outlined),
