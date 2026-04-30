@@ -211,16 +211,19 @@ function initAuthState() {
     const user = localStorage.getItem('hectorgym_user');
     const loginBtn  = document.getElementById('navLoginBtn');
     const logoutBtn = document.getElementById('navLogoutBtn');
-    if (!loginBtn || !logoutBtn) return;
+    const loginBtnMobile = document.getElementById('navLoginBtnMobile');
     if (user) {
-      loginBtn.style.display  = 'none';
-      logoutBtn.style.display = 'inline-flex';
-      logoutBtn.addEventListener('click', e => {
-        e.preventDefault();
-        localStorage.removeItem('hectorgym_token');
-        localStorage.removeItem('hectorgym_user');
-        window.location.reload();
-      });
+      if (loginBtn)  loginBtn.style.display  = 'none';
+      if (loginBtnMobile) loginBtnMobile.style.display = 'none';
+      if (logoutBtn) {
+        logoutBtn.style.display = 'inline-flex';
+        logoutBtn.addEventListener('click', e => {
+          e.preventDefault();
+          localStorage.removeItem('hectorgym_token');
+          localStorage.removeItem('hectorgym_user');
+          window.location.reload();
+        });
+      }
     }
   } catch (_) {}
 }
