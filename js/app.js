@@ -455,7 +455,7 @@ async function initClientesPage() {
     if (!items.length) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="6">
+          <td colspan="7">
             <div class="empty-state">
               <i class="fas fa-users-slash"></i>
               <p>No hay clientes que coincidan con los filtros.</p>
@@ -493,10 +493,16 @@ async function initClientesPage() {
           <td><span class="badge ${badgeClass}">${escapeHtml(badgeLabel)}</span></td>
           <td>${escapeHtml(cliente.objetivo || '-')}</td>
           <td>
+            <div style="font-size:0.82rem;line-height:1.7;color:#ccc">
+              <span title="Peso">${cliente.peso ? `${cliente.peso} kg` : '-'}</span><br>
+              <span title="Estatura">${cliente.estatura ? `${cliente.estatura} m` : '-'}</span><br>
+              ${calculateImc(cliente.peso, cliente.estatura) !== '-' ? `<span title="IMC" style="color:#888">IMC: ${calculateImc(cliente.peso, cliente.estatura)}</span>` : ''}
+            </div>
+          </td>
+          <td>
             <div class="action-btns">
-              <button class="action-btn action-btn-view" data-preview-user="${cliente.id}" title="Ver portal"><i class="fas fa-eye"></i></button>
               <button class="action-btn action-btn-edit" data-edit-user="${cliente.id}" title="Editar cliente"><i class="fas fa-pen"></i></button>
-              <button class="action-btn action-btn-delete" data-delete-user="${cliente.id}" title="Desactivar cliente"><i class="fas fa-trash"></i></button>
+              <button class="action-btn action-btn-delete" data-delete-user="${cliente.id}" title="Eliminar cliente"><i class="fas fa-trash"></i></button>
             </div>
           </td>
         </tr>
@@ -530,16 +536,9 @@ async function initClientesPage() {
   }
 
   tableBody?.addEventListener('click', async (event) => {
-    const previewButton = event.target.closest('[data-preview-user]');
     const editButton = event.target.closest('[data-edit-user]');
     const deleteButton = event.target.closest('[data-delete-user]');
-    if (!previewButton && !editButton && !deleteButton) return;
-
-    if (previewButton) {
-      localStorage.setItem(STORAGE_KEYS.portalUserId, previewButton.dataset.previewUser);
-      window.location.href = 'portal.html';
-      return;
-    }
+    if (!editButton && !deleteButton) return;
 
     if (editButton) {
       const cliente = clientes.find((item) => Number(item.id) === Number(editButton.dataset.editUser));
@@ -550,6 +549,7 @@ async function initClientesPage() {
         icon: '✏️',
         fields: [
           { id: 'nombreCompleto', label: 'Nombre completo', type: 'text', value: `${cliente.nombre} ${cliente.apellido}` },
+          { id: 'documento', label: 'Documento (cédula)', type: 'text', value: cliente.documento || '', required: false },
           { id: 'telefono', label: 'Teléfono', type: 'text', value: cliente.telefono || '', required: false },
           { id: 'objetivo', label: 'Objetivo', type: 'text', value: cliente.objetivo || '', required: false },
           { id: 'peso', label: 'Peso (kg)', type: 'number', value: cliente.peso || '', required: false, min: 0, step: 0.1 },
@@ -566,6 +566,7 @@ async function initClientesPage() {
         body: JSON.stringify({
           nombre,
           apellido,
+          documento: result.documento || null,
           telefono: result.telefono,
           objetivo: result.objetivo,
           peso: result.peso || null,

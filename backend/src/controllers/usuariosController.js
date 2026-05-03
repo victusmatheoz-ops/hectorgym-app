@@ -87,18 +87,19 @@ exports.crear = async (req, res, next) => {
 exports.actualizar = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { nombre, apellido, telefono, peso, estatura, objetivo } = req.body;
+    const { nombre, apellido, documento, telefono, peso, estatura, objetivo } = req.body;
 
     await db.query(
       `UPDATE usuarios
        SET nombre = COALESCE(?, nombre),
            apellido = COALESCE(?, apellido),
+           documento = ?,
            telefono = COALESCE(?, telefono),
-           peso = COALESCE(?, peso),
-           estatura = COALESCE(?, estatura),
+           peso = ?,
+           estatura = ?,
            objetivo = COALESCE(?, objetivo)
        WHERE id = ?`,
-      [nombre, apellido, telefono, peso, estatura, objetivo, id]
+      [nombre, apellido, documento || null, telefono, peso || null, estatura || null, objetivo, id]
     );
 
     res.json({ message: 'Usuario actualizado' });
