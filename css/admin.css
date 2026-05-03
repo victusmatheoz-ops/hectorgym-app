@@ -928,4 +928,242 @@ body:not([data-page="landing"]):not([data-page="login"]) {
   .section-card { border-radius: 12px !important; }
   .admin-table-card { border-radius: 12px !important; }
   .page-header h1 { font-size: 1.6rem !important; }
+  .mem-cards-grid { grid-template-columns: 1fr !important; }
+  .mem-stats-row { gap: 8px !important; }
+  .mem-filter-chips { flex-wrap: wrap !important; }
+}
+
+/* ============================================================
+   MEMBRESÍAS — DISEÑO DE CARDS
+   ============================================================ */
+
+/* Stats row */
+.mem-stats-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.mem-stat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.04);
+}
+.mem-stat i { font-size: 1.6rem; flex-shrink: 0; }
+.mem-stat-num {
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.mem-stat-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.55;
+  margin-top: 3px;
+}
+.mem-stat--green { border-color: rgba(72,199,116,0.25); }
+.mem-stat--green i, .mem-stat--green .mem-stat-num { color: #48c774; }
+.mem-stat--red   { border-color: rgba(255,84,84,0.25); }
+.mem-stat--red   i, .mem-stat--red   .mem-stat-num { color: #ff5454; }
+.mem-stat--yellow{ border-color: rgba(255,185,0,0.25); }
+.mem-stat--yellow i, .mem-stat--yellow .mem-stat-num { color: #ffb900; }
+
+/* Filter chips */
+.mem-filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mem-chip {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: inherit;
+}
+.mem-chip:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.mem-chip--active, .mem-chip.mem-chip--active {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border-color: rgba(255,255,255,0.35);
+}
+.mem-chip--green.mem-chip--active { background: rgba(72,199,116,0.15); border-color: #48c774; color: #48c774; }
+.mem-chip--red.mem-chip--active   { background: rgba(255,84,84,0.15);  border-color: #ff5454; color: #ff5454; }
+.mem-chip--yellow.mem-chip--active{ background: rgba(255,185,0,0.15);  border-color: #ffb900; color: #ffb900; }
+
+/* Cards grid */
+.mem-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+
+/* Card base */
+.mem-card {
+  background: #111318;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.mem-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+}
+.mem-card--green { border-left: 3px solid #48c774; }
+.mem-card--yellow { border-left: 3px solid #ffb900; }
+.mem-card--red    { border-left: 3px solid #ff5454; }
+
+/* Card header */
+.mem-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mem-card-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+.mem-card-identity { flex: 1; min-width: 0; }
+.mem-card-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mem-card-plan {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  margin-top: 2px;
+}
+
+/* Badges */
+.mem-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.badge-green  { background: rgba(72,199,116,0.15); color: #48c774; border: 1px solid rgba(72,199,116,0.3); }
+.badge-red    { background: rgba(255,84,84,0.15);  color: #ff5454; border: 1px solid rgba(255,84,84,0.3); }
+.badge-yellow { background: rgba(255,185,0,0.15);  color: #ffb900; border: 1px solid rgba(255,185,0,0.3); }
+
+/* Dates */
+.mem-card-dates {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+}
+.mem-date-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+}
+.mem-date-item i { color: rgba(255,255,255,0.3); margin-top: 3px; font-size: 0.8rem; }
+.mem-date-item span { font-size: 0.75rem; line-height: 1.5; color: rgba(255,255,255,0.6); }
+.mem-date-item strong { display: block; color: rgba(255,255,255,0.85); }
+.mem-date-sep { color: rgba(255,255,255,0.2); font-size: 0.9rem; }
+
+/* Progress */
+.mem-progress-wrap { display: flex; flex-direction: column; gap: 7px; }
+.mem-progress-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.mem-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #48c774 0%, #48c774 100%);
+  width: 0;
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.mem-card--yellow .mem-progress-fill { background: linear-gradient(90deg, #ffb900, #ff7c00); }
+.mem-card--red    .mem-progress-fill { background: linear-gradient(90deg, #ff5454, #c0392b); }
+.mem-vigencia-text {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+}
+.mem-card--yellow .mem-vigencia-text { color: #ffb900; }
+.mem-card--red    .mem-vigencia-text { color: #ff5454; }
+
+/* Actions */
+.mem-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+.mem-action-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.18s;
+  font-family: inherit;
+}
+.mem-action-btn--primary {
+  background: rgba(72,199,116,0.15);
+  color: #48c774;
+  border: 1px solid rgba(72,199,116,0.25);
+}
+.mem-action-btn--primary:hover { background: rgba(72,199,116,0.28); }
+.mem-action-btn--outline {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.mem-action-btn--outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.mem-action-btn--danger {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  background: rgba(255,84,84,0.1);
+  color: #ff5454;
+  border: 1px solid rgba(255,84,84,0.2);
+}
+.mem-action-btn--danger:hover { background: rgba(255,84,84,0.22); }
+
+/* Footer */
+.mem-footer {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.3);
 }

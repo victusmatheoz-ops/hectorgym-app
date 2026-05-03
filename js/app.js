@@ -740,140 +740,167 @@ async function initMembresiasPage() {
   bindLogoutButtons();
   if (!requireAdmin()) return;
 
-  const tableBody = document.getElementById('membresiasTableBody');
-  const totalInfo = document.getElementById('membresiasTotalInfo');
-  const resumenInfo = document.getElementById('membresiasResumenInfo');
+  const grid        = document.getElementById('membresiasGrid');
+  const totalInfo   = document.getElementById('membresiasTotalInfo');
   const searchInput = document.getElementById('membresiasSearch');
-  const estadoFilter = document.getElementById('membresiasEstadoFilter');
-  const planFilter = document.getElementById('membresiasPlanFilter');
-  const formStatus = document.getElementById('membresiaFormStatus');
-  let membresias = [];
-  let tipos = [];
+  const chipContainer = document.getElementById('membresiasEstadoChips');
+  const formStatus  = document.getElementById('membresiaFormStatus');
 
-  function updateStats(items) {
-    document.getElementById('membresiasActivasStat').textContent = items.filter((item) => item.estado === 'activa').length;
-    document.getElementById('membresiasVencidasStat').textContent = items.filter((item) => item.estado === 'vencida').length;
-    document.getElementById('membresiasProximasStat').textContent = items.filter((item) => item.estado === 'proxima_a_vencer').length;
-    document.getElementById('membresiasIngresosStat').textContent = formatCurrency(
-      items.filter((item) => item.estado !== 'vencida').reduce((sum, item) => sum + Number(item.precio || 0), 0)
-    );
+  let membresias = [];
+  let tipos      = [];
+  let activeEstado = 'todos';
+
+  /* ── utilidades ─────────────────────────────── */
+  function diasRestantes(fechaFin) {
+    const hoy  = new Date(); hoy.setHours(0,0,0,0);
+    const fin  = new Date(fechaFin); fin.setHours(0,0,0,0);
+    return Math.round((fin - hoy) / 86400000);
   }
 
-  function renderRows(items) {
-    if (!tableBody) return;
+  function progresoMembresia(fechaInicio, fechaFin) {
+    const inicio = new Date(fechaInicio).getTime();
+    const fin    = new Date(fechaFin).getTime();
+    const hoy    = Date.now();
+    if (fin <= inicio) return 100;
+    return Math.min(100, Math.max(0, Math.round((hoy - inicio) / (fin - inicio) * 100)));
+  }
+
+  function textoVigencia(estado, diasR) {
+    if (estado === 'activa')            return diasR > 0 ? `Vence en ${diasR} día${diasR === 1 ? '' : 's'}` : 'Vence hoy';
+    if (estado === 'proxima_a_vencer')  return `⚠ Vence en ${diasR} día${diasR === 1 ? '' : 's'}`;
+    const diasV = Math.abs(diasR);
+    return `Venció hace ${diasV} día${diasV === 1 ? '' : 's'}`;
+  }
+
+  function colorEstado(estado) {
+    if (estado === 'activa')           return 'mem-card--green';
+    if (estado === 'proxima_a_vencer') return 'mem-card--yellow';
+    return 'mem-card--red';
+  }
+
+  function badgeEstado(estado) {
+    const labels = { activa: 'Activa', proxima_a_vencer: 'Por vencer', vencida: 'Vencida' };
+    const cls    = { activa: 'badge-green', proxima_a_vencer: 'badge-yellow', vencida: 'badge-red' };
+    return `<span class="mem-badge ${cls[estado] || ''}">${labels[estado] || estado}</span>`;
+  }
+
+  /* ── stats ──────────────────────────────────── */
+  function updateStats(items) {
+    document.getElementById('membresiasActivasStat').textContent   = items.filter(m => m.estado === 'activa').length;
+    document.getElementById('membresiasVencidasStat').textContent  = items.filter(m => m.estado === 'vencida').length;
+    document.getElementById('membresiasProximasStat').textContent  = items.filter(m => m.estado === 'proxima_a_vencer').length;
+  }
+
+  /* ── render cards ───────────────────────────── */
+  function renderCards(items) {
+    if (!grid) return;
 
     if (!items.length) {
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="7">
-            <div class="empty-state">
-              <i class="fas fa-id-card"></i>
-              <p>No hay membresías que coincidan con los filtros.</p>
-            </div>
-          </td>
-        </tr>
-      `;
+      grid.innerHTML = `<div class="empty-state"><i class="fas fa-id-card"></i><p>No hay membresías que coincidan.</p></div>`;
       return;
     }
 
-    tableBody.innerHTML = items.map((membresia) => `
-      <tr>
-        <td>
-          <div class="user-info">
-            <div class="user-avatar">${initialsFromName(membresia.nombre, membresia.apellido)}</div>
-            <div>
-              <div class="user-name">${escapeHtml(membresia.nombre)} ${escapeHtml(membresia.apellido)}</div>
-              <div class="user-email">#${escapeHtml(membresia.id)} · ${escapeHtml(membresia.correo || '')}</div>
+    grid.innerHTML = items.map(m => {
+      const diasR   = diasRestantes(m.fecha_fin);
+      const progreso = progresoMembresia(m.fecha_inicio, m.fecha_fin);
+      const colorCard = colorEstado(m.estado);
+      const vigencia  = textoVigencia(m.estado, diasR);
+      const iniciales = initialsFromName(m.nombre, m.apellido);
+
+      return `
+        <div class="mem-card ${colorCard}" data-id="${m.id}">
+          <div class="mem-card-header">
+            <div class="mem-card-avatar">${escapeHtml(iniciales)}</div>
+            <div class="mem-card-identity">
+              <div class="mem-card-name">${escapeHtml(m.nombre)} ${escapeHtml(m.apellido)}</div>
+              <div class="mem-card-plan">${escapeHtml(m.tipo || 'Plan estándar')}</div>
+            </div>
+            ${badgeEstado(m.estado)}
+          </div>
+
+          <div class="mem-card-dates">
+            <div class="mem-date-item">
+              <i class="fas fa-calendar-day"></i>
+              <span><strong>Inicio</strong><br>${formatDate(m.fecha_inicio)}</span>
+            </div>
+            <div class="mem-date-sep">→</div>
+            <div class="mem-date-item">
+              <i class="fas fa-calendar-check"></i>
+              <span><strong>Vence</strong><br>${formatDate(m.fecha_fin)}</span>
             </div>
           </div>
-        </td>
-        <td>${escapeHtml(membresia.tipo)}</td>
-        <td>${formatDate(membresia.fecha_inicio)}</td>
-        <td>${formatDate(membresia.fecha_fin)}</td>
-        <td><span class="badge ${membershipBadgeClass(membresia.estado)}">${escapeHtml(String(membresia.estado).replaceAll('_', ' '))}</span></td>
-        <td>${formatCurrency(membresia.precio)}</td>
-        <td>
-          <div class="action-btns">
-            <button class="action-btn action-btn-edit" data-edit-membership="${membresia.id}" title="Editar membresía"><i class="fas fa-pen"></i></button>
-            <button class="action-btn action-btn-delete" data-delete-membership="${membresia.id}" title="Eliminar membresía"><i class="fas fa-trash"></i></button>
+
+          <div class="mem-progress-wrap">
+            <div class="mem-progress-bar">
+              <div class="mem-progress-fill" style="width:${progreso}%"></div>
+            </div>
+            <div class="mem-vigencia-text">${escapeHtml(vigencia)}</div>
           </div>
-        </td>
-      </tr>
-    `).join('');
+
+          <div class="mem-card-actions">
+            <button class="mem-action-btn mem-action-btn--primary" data-renovar="${m.id}" title="Ir a registrar un pago para renovar">
+              <i class="fas fa-rotate-right"></i> Renovar
+            </button>
+            <button class="mem-action-btn mem-action-btn--outline" data-edit-membership="${m.id}" title="Cambiar plan o fechas">
+              <i class="fas fa-pen"></i> Editar
+            </button>
+            <button class="mem-action-btn mem-action-btn--danger" data-delete-membership="${m.id}" title="Eliminar membresía">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Trigger animación de barras de progreso
+    requestAnimationFrame(() => {
+      grid.querySelectorAll('.mem-progress-fill').forEach(el => {
+        el.style.transition = 'width 0.8s cubic-bezier(0.4,0,0.2,1)';
+      });
+    });
   }
 
+  /* ── filtros ────────────────────────────────── */
   function applyFilters() {
     const query = (searchInput?.value || '').trim().toLowerCase();
-    const estado = estadoFilter?.value || 'todos';
-    const plan = planFilter?.value || 'todos';
 
-    const filtered = membresias.filter((membresia) => {
-      const fullName = `${membresia.nombre} ${membresia.apellido}`.toLowerCase();
-      const matchesQuery = !query
-        || fullName.includes(query)
-        || String(membresia.id).includes(query)
-        || String(membresia.tipo || '').toLowerCase().includes(query);
-      const matchesEstado = estado === 'todos' || membresia.estado === estado;
-      const matchesPlan = plan === 'todos' || String(membresia.tipo) === plan;
-      return matchesQuery && matchesEstado && matchesPlan;
+    const filtered = membresias.filter(m => {
+      const fullName = `${m.nombre} ${m.apellido}`.toLowerCase();
+      const matchesQuery  = !query || fullName.includes(query) || String(m.id).includes(query);
+      const matchesEstado = activeEstado === 'todos' || m.estado === activeEstado;
+      return matchesQuery && matchesEstado;
     });
 
-    renderRows(filtered);
+    renderCards(filtered);
     updateStats(membresias);
-
-    if (totalInfo) {
-      totalInfo.textContent = `Mostrando ${filtered.length} de ${membresias.length} membresías`;
-    }
-    if (resumenInfo) {
-      const total = filtered.reduce((sum, item) => sum + Number(item.precio || 0), 0);
-      resumenInfo.textContent = `Ingreso estimado del filtro: ${formatCurrency(total)}`;
-    }
+    if (totalInfo) totalInfo.textContent = `Mostrando ${filtered.length} de ${membresias.length} membresías`;
   }
 
-  async function loadData() {
-    const [tiposData, membresiasData, pagosData] = await Promise.all([
-      apiFetch('/membresias/tipos'),
-      apiFetch('/membresias'),
-      apiFetch('/pagos')
-    ]);
-
-    tipos = tiposData;
-    membresias = membresiasData;
-
-    // Calcular ingresos reales del mes actual desde pagos
-    const ahora = new Date();
-    const mesActual = ahora.getMonth();
-    const anioActual = ahora.getFullYear();
-    const ingresosMes = (pagosData || []).reduce((sum, p) => {
-      const fecha = new Date(p.fecha);
-      if (fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual) {
-        return sum + Number(p.monto || 0);
-      }
-      return sum;
-    }, 0);
-
-    if (planFilter) {
-      planFilter.innerHTML = ['<option value="todos">Todos los planes</option>', ...tipos.map((tipo) => `
-        <option value="${escapeHtml(tipo.nombre)}">${escapeHtml(tipo.nombre)}</option>
-      `)].join('');
-    }
-
+  /* ── chips ──────────────────────────────────── */
+  chipContainer?.addEventListener('click', e => {
+    const chip = e.target.closest('[data-estado]');
+    if (!chip) return;
+    activeEstado = chip.dataset.estado;
+    chipContainer.querySelectorAll('.mem-chip').forEach(c => c.classList.remove('mem-chip--active'));
+    chip.classList.add('mem-chip--active');
     applyFilters();
-
-    // Sobreescribir el stat con el ingreso real del mes
-    document.getElementById('membresiasIngresosStat').textContent = formatCurrency(ingresosMes);
-  }
+  });
 
   searchInput?.addEventListener('input', applyFilters);
-  estadoFilter?.addEventListener('change', applyFilters);
-  planFilter?.addEventListener('change', applyFilters);
 
-  tableBody?.addEventListener('click', async (event) => {
-    const editButton = event.target.closest('[data-edit-membership]');
-    const deleteButton = event.target.closest('[data-delete-membership]');
+  /* ── acciones en cards ──────────────────────── */
+  grid?.addEventListener('click', async e => {
+    const renovarBtn = e.target.closest('[data-renovar]');
+    const editBtn    = e.target.closest('[data-edit-membership]');
+    const deleteBtn  = e.target.closest('[data-delete-membership]');
 
-    if (editButton) {
-      const membership = membresias.find((item) => Number(item.id) === Number(editButton.dataset.editMembership));
+    if (renovarBtn) {
+      window.location.href = 'pagos.html';
+      return;
+    }
+
+    if (editBtn) {
+      const membership = membresias.find(m => Number(m.id) === Number(editBtn.dataset.editMembership));
       if (!membership) return;
 
       const result = await showFormModal({
@@ -882,15 +909,15 @@ async function initMembresiasPage() {
         fields: [
           {
             id: 'tipo_id', label: 'Tipo de membresía', type: 'select', value: String(membership.tipo_id),
-            options: tipos.map((t) => ({ value: t.id, label: `${t.nombre} — ${formatCurrency(t.precio)}` }))
+            options: tipos.map(t => ({ value: t.id, label: t.nombre }))
           },
           { id: 'fecha_inicio', label: 'Fecha de inicio', type: 'date', value: formatDate(membership.fecha_inicio) },
           {
             id: 'estado', label: 'Estado', type: 'select', value: membership.estado,
             options: [
-              { value: 'activa', label: 'Activa' },
-              { value: 'proxima_a_vencer', label: 'Próxima a vencer' },
-              { value: 'vencida', label: 'Vencida' }
+              { value: 'activa',            label: 'Activa' },
+              { value: 'proxima_a_vencer',  label: 'Próxima a vencer' },
+              { value: 'vencida',           label: 'Vencida' }
             ]
           }
         ]
@@ -899,56 +926,45 @@ async function initMembresiasPage() {
 
       apiFetch(`/membresias/${membership.id}`, {
         method: 'PUT',
-        body: JSON.stringify({
-          tipo_id: Number(result.tipo_id),
-          fecha_inicio: result.fecha_inicio,
-          estado: result.estado
-        })
+        body: JSON.stringify({ tipo_id: Number(result.tipo_id), fecha_inicio: result.fecha_inicio, estado: result.estado })
       })
-        .then(async () => {
-          showMessage(formStatus, 'Membresía actualizada correctamente.', 'success');
-          await loadData();
-        })
-        .catch((error) => showMessage(formStatus, error.message));
-
+        .then(async () => { showMessage(formStatus, 'Membresía actualizada.', 'success'); await loadData(); })
+        .catch(err => showMessage(formStatus, err.message));
       return;
     }
 
-    if (deleteButton) {
-      const membership = membresias.find((item) => Number(item.id) === Number(deleteButton.dataset.deleteMembership));
+    if (deleteBtn) {
+      const membership = membresias.find(m => Number(m.id) === Number(deleteBtn.dataset.deleteMembership));
       if (!membership) return;
       const ok = await showConfirmModal({
         title: 'Eliminar membresía',
-        message: `¿Eliminar la membresía #${membership.id} de ${membership.nombre} ${membership.apellido}?`,
+        message: `¿Eliminar la membresía de ${membership.nombre} ${membership.apellido}?`,
         confirmLabel: 'Eliminar',
         danger: true
       });
       if (!ok) return;
 
       apiFetch(`/membresias/${membership.id}`, { method: 'DELETE' })
-        .then(async () => {
-          showMessage(formStatus, 'Membresía eliminada correctamente.', 'success');
-          await loadData();
-        })
-        .catch((error) => showMessage(formStatus, error.message));
+        .then(async () => { showMessage(formStatus, 'Membresía eliminada.', 'success'); await loadData(); })
+        .catch(err => showMessage(formStatus, err.message));
     }
   });
+
+  /* ── carga de datos ─────────────────────────── */
+  async function loadData() {
+    const [tiposData, membresiasData] = await Promise.all([
+      apiFetch('/membresias/tipos'),
+      apiFetch('/membresias')
+    ]);
+    tipos      = tiposData;
+    membresias = membresiasData;
+    applyFilters();
+  }
 
   try {
     await loadData();
   } catch (error) {
-    if (tableBody) {
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="7">
-            <div class="empty-state">
-              <i class="fas fa-triangle-exclamation"></i>
-              <p>${escapeHtml(error.message)}</p>
-            </div>
-          </td>
-        </tr>
-      `;
-    }
+    if (grid) grid.innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${escapeHtml(error.message)}</p></div>`;
   }
 }
 

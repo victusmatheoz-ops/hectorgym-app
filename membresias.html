@@ -44,34 +44,27 @@
         </div>
 
         <!-- Stats -->
-        <div class="admin-stats-grid">
-            <div class="admin-stat-card card-green" style="min-height: 100px">
+        <div class="mem-stats-row">
+            <div class="mem-stat mem-stat--green">
+                <i class="fas fa-circle-check"></i>
                 <div>
-                    <div class="stat-label">Activas</div>
-                    <div class="stat-number" id="membresiasActivasStat">0</div>
+                    <span class="mem-stat-num" id="membresiasActivasStat">0</span>
+                    <span class="mem-stat-label">Activas</span>
                 </div>
-                <div class="card-icon"><i class="fas fa-check-circle"></i></div>
             </div>
-            <div class="admin-stat-card card-red" style="min-height: 100px">
+            <div class="mem-stat mem-stat--red">
+                <i class="fas fa-circle-xmark"></i>
                 <div>
-                    <div class="stat-label">Vencidas</div>
-                    <div class="stat-number" id="membresiasVencidasStat">0</div>
+                    <span class="mem-stat-num" id="membresiasVencidasStat">0</span>
+                    <span class="mem-stat-label">Vencidas</span>
                 </div>
-                <div class="card-icon"><i class="fas fa-times-circle"></i></div>
             </div>
-            <div class="admin-stat-card card-yellow" style="min-height: 100px">
+            <div class="mem-stat mem-stat--yellow">
+                <i class="fas fa-triangle-exclamation"></i>
                 <div>
-                    <div class="stat-label">Próx. a vencer</div>
-                    <div class="stat-number" id="membresiasProximasStat">0</div>
+                    <span class="mem-stat-num" id="membresiasProximasStat">0</span>
+                    <span class="mem-stat-label">Próx. a vencer</span>
                 </div>
-                <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            </div>
-            <div class="admin-stat-card card-blue" style="min-height: 100px">
-                <div>
-                    <div class="stat-label">Ingresos mes</div>
-                    <div class="stat-number" id="membresiasIngresosStat">COP 0</div>
-                </div>
-                <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
             </div>
         </div>
 
@@ -79,46 +72,25 @@
         <div class="toolbar">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="membresiasSearch" placeholder="Buscar membresía por cliente...">
+                <input type="text" id="membresiasSearch" placeholder="Buscar por nombre...">
             </div>
-            <select class="filter-select" id="membresiasEstadoFilter">
-                <option value="todos">Todos los estados</option>
-                <option value="activa">Activa</option>
-                <option value="vencida">Vencida</option>
-                <option value="proxima_a_vencer">Próxima a vencer</option>
-            </select>
-            <select class="filter-select" id="membresiasPlanFilter">
-                <option value="todos">Todos los planes</option>
-            </select>
+            <div class="mem-filter-chips" id="membresiasEstadoChips">
+                <button class="mem-chip mem-chip--active" data-estado="todos">Todos</button>
+                <button class="mem-chip mem-chip--green" data-estado="activa">✓ Activas</button>
+                <button class="mem-chip mem-chip--red" data-estado="vencida">✗ Vencidas</button>
+                <button class="mem-chip mem-chip--yellow" data-estado="proxima_a_vencer">⚠ Por vencer</button>
+            </div>
         </div>
 
-        <!-- Memberships Table -->
-        <div class="admin-table-card">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Plan</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
-                        <th>Estado</th>
-                        <th>Precio</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="membresiasTableBody">
-                    <tr><td colspan="7"><div class="empty-state"><i class="fas fa-id-card"></i><p>Cargando membresías...</p></div></td></tr>
-                </tbody>
-            </table>
-            <div class="table-footer">
-                <span id="membresiasTotalInfo">Mostrando 0 membresías</span>
-                <span id="membresiasResumenInfo">0 activas · 0 vencidas · 0 próx. a vencer</span>
-            </div>
+        <!-- Cards Grid -->
+        <div id="membresiasGrid" class="mem-cards-grid">
+            <div class="empty-state"><i class="fas fa-id-card"></i><p>Cargando membresías...</p></div>
         </div>
+
+        <div class="mem-footer" id="membresiasTotalInfo">Mostrando 0 membresías</div>
 
     </div>
 
-    <!-- status para edición de membresías -->
     <div class="status-message" id="membresiaFormStatus" style="display:none"></div>
 
     <script src="js/app.js"></script>
