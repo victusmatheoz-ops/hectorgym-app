@@ -15,12 +15,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _correoController    = TextEditingController();
   final _telefonoController  = TextEditingController();
   final _passwordController  = TextEditingController();
+  final _pesoController      = TextEditingController();
+  final _estaturaController  = TextEditingController();
 
+  String? _objetivo;
   bool _loading  = false;
   bool _showPass = false;
   String? _error;
 
   static const _red = Color(0xFFE53935);
+
+  static const _objetivos = [
+    'Pérdida de peso',
+    'Ganar masa muscular',
+    'Mejorar condición física',
+    'Mantenimiento',
+    'Otro',
+  ];
 
   @override
   void dispose() {
@@ -29,6 +40,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _correoController.dispose();
     _telefonoController.dispose();
     _passwordController.dispose();
+    _pesoController.dispose();
+    _estaturaController.dispose();
     super.dispose();
   }
 
@@ -39,8 +52,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passwordController.text;
     final telefono = _telefonoController.text.trim();
 
-    if (nombre.isEmpty || apellido.isEmpty || correo.isEmpty || password.isEmpty) {
-      setState(() => _error = 'Completa los campos obligatorios');
+    if (nombre.isEmpty || apellido.isEmpty || correo.isEmpty || password.isEmpty || telefono.isEmpty) {
+      setState(() => _error = 'Completa todos los campos obligatorios');
       return;
     }
     if (password.length < 6) {
@@ -48,15 +61,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    final pesoVal     = double.tryParse(_pesoController.text.trim());
+    final estaturaVal = double.tryParse(_estaturaController.text.trim());
+
     setState(() { _loading = true; _error = null; });
 
     try {
       await ApiService.register(
-        nombre:   nombre,
-        apellido: apellido,
-        correo:   correo,
-        password: password,
-        telefono: telefono.isEmpty ? null : telefono,
+        nombre:    nombre,
+        apellido:  apellido,
+        correo:    correo,
+        password:  password,
+        telefono:  telefono,
+        objetivo:  _objetivo,
+        peso:      pesoVal,
+        estatura:  estaturaVal,
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -204,7 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           keyboardType: TextInputType.phone,
                           style: const TextStyle(color: Colors.white),
                           decoration: const InputDecoration(
-                            labelText: 'Teléfono (opcional)',
+                            labelText: 'Teléfono *',
                             prefixIcon: Icon(Icons.phone_outlined),
                           ),
                         ),
@@ -225,6 +244,63 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onPressed: () => setState(() => _showPass = !_showPass),
                             ),
                           ),
+                        ),
+                        // ── Datos opcionales ──────────────────────────
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Expanded(child: Divider(color: Colors.white12)),
+                            const SizedBox(width: 10),
+                            const Text(
+                              'Datos opcionales',
+                              style: TextStyle(color: Colors.white38, fontSize: 11, letterSpacing: 1),
+                            ),
+                            const SizedBox(width: 10),
+                            const Expanded(child: Divider(color: Colors.white12)),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        DropdownButtonFormField<String>(
+                          value: _objetivo,
+                          dropdownColor: const Color(0xFF1a1d24),
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            labelText: 'Objetivo de entrenamiento',
+                            prefixIcon: Icon(Icons.track_changes_outlined),
+                          ),
+                          items: [
+                            const DropdownMenuItem(value: null, child: Text('— Sin especificar —', style: TextStyle(color: Colors.white54))),
+                            ..._objetivos.map((o) => DropdownMenuItem(value: o, child: Text(o))),
+                          ],
+                          onChanged: (v) => setState(() => _objetivo = v),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _pesoController,
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                style: const TextStyle(color: Colors.white),
+                                decoration: const InputDecoration(
+                                  labelText: 'Peso (kg)',
+                                  prefixIcon: Icon(Icons.monitor_weight_outlined),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: TextField(
+                                controller: _estaturaController,
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                style: const TextStyle(color: Colors.white),
+                                decoration: const InputDecoration(
+                                  labelText: 'Estatura (m)',
+                                  prefixIcon: Icon(Icons.height_outlined),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         // Error box
                         if (_error != null) ...[

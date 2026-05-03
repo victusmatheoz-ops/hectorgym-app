@@ -128,15 +128,21 @@ class ApiService {
     required String apellido,
     required String correo,
     required String password,
-    String? telefono,
+    required String telefono,
+    String? objetivo,
+    double? peso,
+    double? estatura,
   }) async {
     final body = <String, dynamic>{
-      'nombre': nombre,
+      'nombre':   nombre,
       'apellido': apellido,
-      'correo': correo,
+      'correo':   correo,
       'password': password,
+      'telefono': telefono,
     };
-    if (telefono != null && telefono.isNotEmpty) body['telefono'] = telefono;
+    if (objetivo != null && objetivo.isNotEmpty) body['objetivo'] = objetivo;
+    if (peso     != null)                        body['peso']     = peso;
+    if (estatura != null)                        body['estatura'] = estatura;
 
     final response = await _safePost(
       Uri.parse('$_baseUrl/auth/register'),
