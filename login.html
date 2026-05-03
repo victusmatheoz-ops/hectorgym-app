@@ -166,6 +166,8 @@
             </div>
 
             <form id="registerForm" class="login-form" autocomplete="off">
+
+                <!-- Datos obligatorios -->
                 <div class="form-row-login">
                     <div class="login-field">
                         <label for="regNombre"><i class="fas fa-user"></i> Nombre</label>
@@ -180,21 +182,15 @@
                 </div>
 
                 <div class="login-field">
-                    <label for="regDocumento"><i class="fas fa-id-card"></i> Documento <span style="color:var(--text-muted);font-size:0.75rem">(cédula)</span></label>
-                    <input type="text" id="regDocumento" name="documento" class="form-control"
-                        placeholder="Número de documento" autocomplete="off">
-                </div>
-
-                <div class="login-field">
                     <label for="regCorreo"><i class="fas fa-envelope"></i> Correo electrónico</label>
                     <input type="email" id="regCorreo" name="correo" class="form-control"
                         placeholder="tu@correo.com" required autocomplete="email">
                 </div>
 
                 <div class="login-field">
-                    <label for="regTelefono"><i class="fas fa-phone"></i> Teléfono <span style="color:var(--text-muted);font-size:0.75rem">(opcional)</span></label>
+                    <label for="regTelefono"><i class="fas fa-phone"></i> Teléfono</label>
                     <input type="tel" id="regTelefono" name="telefono" class="form-control"
-                        placeholder="300 123 4567">
+                        placeholder="300 123 4567" required autocomplete="tel">
                 </div>
 
                 <div class="login-field">
@@ -205,6 +201,36 @@
                         <button type="button" class="login-toggle-pass" id="toggleRegPass" aria-label="Mostrar/Ocultar">
                             <i class="fas fa-eye" id="toggleRegPassIcon"></i>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Datos opcionales -->
+                <div class="reg-optional-divider">
+                    <span><i class="fas fa-circle-plus"></i> Datos opcionales</span>
+                </div>
+
+                <div class="login-field">
+                    <label for="regObjetivo"><i class="fas fa-bullseye"></i> Objetivo de entrenamiento</label>
+                    <select id="regObjetivo" name="objetivo" class="form-control">
+                        <option value="">— Seleccionar (opcional) —</option>
+                        <option value="Pérdida de peso">Pérdida de peso</option>
+                        <option value="Ganar masa muscular">Ganar masa muscular</option>
+                        <option value="Mejorar condición física">Mejorar condición física</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-row-login">
+                    <div class="login-field">
+                        <label for="regPeso"><i class="fas fa-weight-scale"></i> Peso <span style="color:var(--text-muted);font-size:0.75rem">(kg)</span></label>
+                        <input type="number" id="regPeso" name="peso" class="form-control"
+                            placeholder="70.5" min="20" max="300" step="0.1" autocomplete="off">
+                    </div>
+                    <div class="login-field">
+                        <label for="regEstatura"><i class="fas fa-ruler-vertical"></i> Estatura <span style="color:var(--text-muted);font-size:0.75rem">(m)</span></label>
+                        <input type="number" id="regEstatura" name="estatura" class="form-control"
+                            placeholder="1.75" min="1.00" max="2.50" step="0.01" autocomplete="off">
                     </div>
                 </div>
 

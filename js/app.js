@@ -366,12 +366,14 @@ async function initLoginPage() {
       await apiFetch('/auth/register', {
         method: 'POST',
         body: JSON.stringify({
-          nombre: formData.get('nombre'),
-          apellido: formData.get('apellido'),
-          documento: formData.get('documento') || undefined,
-          correo: formData.get('correo'),
-          password: formData.get('password'),
-          telefono: formData.get('telefono') || undefined
+          nombre:    formData.get('nombre'),
+          apellido:  formData.get('apellido'),
+          correo:    formData.get('correo'),
+          password:  formData.get('password'),
+          telefono:  formData.get('telefono'),
+          objetivo:  formData.get('objetivo')  || undefined,
+          peso:      formData.get('peso')      ? parseFloat(formData.get('peso'))    : undefined,
+          estatura:  formData.get('estatura')  ? parseFloat(formData.get('estatura')): undefined
         })
       });
       showMessage(registerStatus, '¡Cuenta creada! Ahora inicia sesión.', 'success');

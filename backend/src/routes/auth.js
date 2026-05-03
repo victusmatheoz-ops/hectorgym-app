@@ -20,7 +20,10 @@ router.post(
     body('nombre').notEmpty().withMessage('El nombre es requerido'),
     body('apellido').notEmpty().withMessage('El apellido es requerido'),
     body('correo').isEmail().withMessage('Correo inválido'),
-    body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener mínimo 6 caracteres')
+    body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener mínimo 6 caracteres'),
+    body('telefono').notEmpty().withMessage('El teléfono es requerido'),
+    body('peso').optional().isFloat({ min: 20, max: 300 }).withMessage('Peso inválido'),
+    body('estatura').optional().isFloat({ min: 1.0, max: 2.5 }).withMessage('Estatura inválida')
   ],
   authController.register
 );
