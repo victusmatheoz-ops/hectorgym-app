@@ -396,12 +396,46 @@ async function initIndexPage() {
   bindLogoutButtons();
   bindDashboardLinks();
 
-  const loginOverlay = document.getElementById('loginOverlay');
-  const loginForm = document.getElementById('loginForm');
-  const loginStatus = document.getElementById('loginStatus');
-  const adminName = document.getElementById('adminName');
+  if (appState.user?.rol === 'usuario') {
+    window.location.href = 'landing.html';
+    return;
+  }
+  if (appState.user?.rol !== 'admin') {
+    window.location.href = 'login.html';
+    return;
+  }
 
-  async function loadAdminDashboard() {
+  // Greeting
+  const greetingEl = document.getElementById('dashGreeting');
+  const dateEl     = document.getElementById('dashDate');
+  const fullDateEl = document.getElementById('dashFullDate');
+
+  const now    = new Date();
+  const hour   = now.getHours();
+  const saludo = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
+  if (greetingEl && appState.user) {
+    greetingEl.textContent = `${saludo}, ${appState.user.nombre}`;
+  }
+  const dateStr = now.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const dateCapitalized = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+  if (dateEl)     dateEl.textContent     = dateCapitalized;
+  if (fullDateEl) fullDateEl.textContent = dateCapitalized;
+
+  function isToday(d) {
+    if (!d) return false;
+    const t = new Date(d), n = new Date();
+    return t.getFullYear() === n.getFullYear() && t.getMonth() === n.getMonth() && t.getDate() === n.getDate();
+  }
+  function isThisMonth(d) {
+    if (!d) return false;
+    const t = new Date(d), n = new Date();
+    return t.getFullYear() === n.getFullYear() && t.getMonth() === n.getMonth();
+  }
+  function formatCOP(n) {
+    return '$' + Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 });
+  }
+
+  async function loadDashboard() {
     const [usuarios, membresias, pagos, rutinas] = await Promise.all([
       apiFetch('/usuarios'),
       apiFetch('/membresias'),
@@ -409,28 +443,122 @@ async function initIndexPage() {
       apiFetch('/rutinas')
     ]);
 
-    document.querySelector('[data-stat="clientes"]').textContent = usuarios.length;
-    document.querySelector('[data-stat="membresias"]').textContent = membresias.filter((item) => item.estado === 'activa').length;
-    document.querySelector('[data-stat="pagos"]').textContent = pagos.length;
-    document.querySelector('[data-stat="rutinas"]').textContent = rutinas.length;
+    // ── Stats ──────────────────────────────────────────────────
+    const activas     = membresias.filter((m) => m.estado === 'activa');
+    const vencidas    = membresias.filter((m) => m.estado === 'vencida');
+    const porVencer   = membresias.filter((m) => m.estado === 'proxima_a_vencer');
+    const pagosMes    = pagos.filter((p) => isThisMonth(p.fecha));
+    const pagosHoy    = pagos.filter((p) => isToday(p.fecha));
+    const ingresosMes = pagosMes.reduce((acc, p) => acc + Number(p.monto), 0);
+    const nuevosMes   = usuarios.filter((u) => isThisMonth(u.fecha_registro));
 
-    if (adminName && appState.user) {
-      adminName.textContent = `${appState.user.nombre} ${appState.user.apellido}`;
+    document.querySelector('[data-stat="clientes"]').textContent  = usuarios.length;
+    document.querySelector('[data-stat="membresias"]').textContent = activas.length;
+    document.querySelector('[data-stat="ingresos"]').textContent  = formatCOP(ingresosMes);
+    document.querySelector('[data-stat="rutinas"]').textContent   = rutinas.length;
+
+    const s1 = document.getElementById('statClientesSub');
+    const s2 = document.getElementById('statMembresiasSub');
+    const s3 = document.getElementById('statIngresosSub');
+    if (s1) s1.textContent = nuevosMes.length ? `${nuevosMes.length} nuevo${nuevosMes.length !== 1 ? 's' : ''} este mes` : 'Sin nuevos este mes';
+    if (s2) s2.textContent = `de ${membresias.length} en total`;
+    if (s3) s3.textContent = `${pagosMes.length} pago${pagosMes.length !== 1 ? 's' : ''} este mes`;
+
+    // ── Alertas ────────────────────────────────────────────────
+    const alertsEl = document.getElementById('dashAlerts');
+    if (alertsEl) {
+      const tiles = [
+        {
+          icon:   'fas fa-triangle-exclamation',
+          color:  'alert-red',
+          label:  'Membresías vencidas',
+          value:  vencidas.length,
+          sub:    vencidas.length
+            ? vencidas.slice(0, 2).map((m) => m.nombre).join(', ') + (vencidas.length > 2 ? ` y ${vencidas.length - 2} más` : '')
+            : 'Todo al día ✓',
+          action: 'Ver vencidas',
+          href:   'membresias.html'
+        },
+        {
+          icon:   'fas fa-clock',
+          color:  'alert-yellow',
+          label:  'Por vencer (≤ 7 días)',
+          value:  porVencer.length,
+          sub:    porVencer.length
+            ? porVencer.slice(0, 2).map((m) => m.nombre).join(', ') + (porVencer.length > 2 ? ` y ${porVencer.length - 2} más` : '')
+            : 'Sin urgentes',
+          action: 'Renovar',
+          href:   'membresias.html'
+        },
+        {
+          icon:   'fas fa-money-bill-wave',
+          color:  'alert-green',
+          label:  'Pagos registrados hoy',
+          value:  pagosHoy.length,
+          sub:    pagosHoy.length
+            ? formatCOP(pagosHoy.reduce((a, p) => a + Number(p.monto), 0)) + ' registrado hoy'
+            : 'Ningún pago hoy',
+          action: 'Registrar pago',
+          href:   'pagos.html'
+        },
+        {
+          icon:   'fas fa-user-plus',
+          color:  'alert-blue',
+          label:  'Nuevos clientes este mes',
+          value:  nuevosMes.length,
+          sub:    nuevosMes.length
+            ? `Último: ${nuevosMes[nuevosMes.length - 1]?.nombre ?? '-'}`
+            : 'Sin registros aún',
+          action: 'Ver clientes',
+          href:   'clientes.html'
+        }
+      ];
+      alertsEl.innerHTML = tiles.map((t) => `
+        <div class="dash-alert-tile ${t.color}">
+          <div class="dat-header">
+            <div class="dat-icon"><i class="${t.icon}"></i></div>
+            <div class="dat-count">${t.value}</div>
+          </div>
+          <div class="dat-label">${t.label}</div>
+          <div class="dat-sub">${escapeHtml(String(t.sub))}</div>
+          <a href="${t.href}" class="dat-action">${t.action} <i class="fas fa-arrow-right"></i></a>
+        </div>
+      `).join('');
+    }
+
+    // ── Actividad reciente ─────────────────────────────────────
+    const actEl = document.getElementById('dashActivity');
+    if (actEl) {
+      const recent = pagos.slice(0, 8);
+      if (!recent.length) {
+        actEl.innerHTML = '<div class="dash-empty"><i class="fas fa-inbox"></i><p>Sin actividad registrada</p></div>';
+      } else {
+        actEl.innerHTML = recent.map((p) => {
+          const d = new Date(p.fecha);
+          const dateLabel = isToday(p.fecha)
+            ? 'Hoy'
+            : d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
+          const initials = (p.nombre ? p.nombre[0] : '?') + (p.apellido ? p.apellido[0] : '');
+          return `
+            <div class="dash-activity-item">
+              <div class="dai-avatar">${escapeHtml(initials.toUpperCase())}</div>
+              <div class="dai-info">
+                <span class="dai-name">${escapeHtml(p.nombre)} ${escapeHtml(p.apellido)}</span>
+                <span class="dai-desc">${escapeHtml(p.metodo_pago || 'Pago')} · ${escapeHtml(p.tipo_membresia || 'Membresía')}</span>
+              </div>
+              <div class="dai-right">
+                <span class="dai-amount">${formatCOP(p.monto)}</span>
+                <span class="dai-date">${dateLabel}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
     }
   }
 
-  if (appState.user?.rol === 'usuario') {
-    window.location.href = 'landing.html';
-    return;
-  }
-
-  if (appState.user?.rol !== 'admin') {
-    window.location.href = 'login.html';
-    return;
-  }
-
   try {
-    await loadAdminDashboard();
+    await loadDashboard();
   } catch (error) {
     appState.clearSession();
     window.location.href = 'login.html';
